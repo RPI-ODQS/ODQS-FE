@@ -1,15 +1,40 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+
+import home from '@/views/home'
+import login from '@/views/login'
+import mscopi from '@/views/mscopi'
+import sos from '@/views/sos'
+import notfound from '@/views/notfound'
 
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'home',
+      component: home
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login
+    },
+    {
+      path: '/mscopi',
+      name: 'mscopi',
+      component: mscopi
+    },
+    {
+      path: '/sos',
+      name: 'sos',
+      component: sos
+    },
+    {
+      path: '*',
+      component: notfound
     }
   ]
 })
