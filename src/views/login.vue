@@ -1,28 +1,30 @@
 <<template>
   <div id="login">
     <top-bar></top-bar>
-    <h1 id="login-title">Hello, Again</h1>
-    <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0px">
-      <div id="username-input">
-        <el-form-item label="" prop="usernameInput">
-          <el-input v-model="loginForm.usernameInput" @keyup.enter.native="login('loginForm')" size="large"
-                    placeholder="请输入用户名"></el-input>
-        </el-form-item>
-      </div>
-      <div id="password-input">
-        <el-form-item label="" prop="passwordInput">
-          <el-input id="login-password-input" type="password" v-model="loginForm.passwordInput"
-                    @keyup.enter.native="login('loginForm')" size="large" placeholder="请输入密码">
-          </el-input>
-        </el-form-item>
-      </div>
-      <el-form-item>
-        <div id="login-button">
-          <el-button id="login-login-btn" type="primary" @click="login('loginForm')">登录</el-button>
-          <el-button id="login-register-btn" @click="onRegister">注册</el-button>
+    <div id="login-form-container">
+      <h1 id="login-title">Welcome</h1>
+      <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0px">
+        <div id="username-input">
+          <el-form-item label="" prop="usernameInput">
+            <el-input v-model="loginForm.usernameInput" @keyup.enter.native="login('loginForm')" size="large"
+                      placeholder="请输入用户名"></el-input>
+          </el-form-item>
         </div>
-      </el-form-item>
-    </el-form>
+        <div id="password-input">
+          <el-form-item label="" prop="passwordInput">
+            <el-input id="login-password-input" type="password" v-model="loginForm.passwordInput"
+                      @keyup.enter.native="login('loginForm')" size="large" placeholder="请输入密码">
+            </el-input>
+          </el-form-item>
+        </div>
+        <el-form-item>
+          <div id="login-button">
+            <el-button id="login-login-btn" type="primary" @click="login('loginForm')">登录</el-button>
+            <el-button id="login-register-btn" @click="onRegister">注册</el-button>
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
 
     <el-dialog title="新用户注册" :visible.syncdel="dialogVisible">
       <div id="register-dialog">
@@ -147,19 +149,28 @@ export default {
 <style scoped>
 #login-title {
   font-size: 36px;
-  margin-top: 15%;
+  font-weight: 200;
   color: #000000;
+}
+
+#login-form-container {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10%;
+  padding: 20px;
+  /* border-radius: 3px; */
+  width: 50%;
+  background-color: white;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
 }
 
 #login-login-btn {
   border-style: none;
-  width: 10%;
 }
 
 #login-register-btn {
   background-color: rgba(255, 255, 255, 0.3);
   border-style: none;
-  width: 10%;
 }
 
 #login {
@@ -171,7 +182,7 @@ export default {
 }
 
 #username-input {
-  width: 35%;
+  width: 65%;
   margin-left: auto;
   margin-right: auto;
   /*margin-bottom: 20px;*/
@@ -179,7 +190,7 @@ export default {
 }
 
 #password-input {
-  width: 35%;
+  width: 65%;
   margin-left: auto;
   margin-right: auto;
   font-family:'Helvetica Neue';

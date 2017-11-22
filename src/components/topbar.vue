@@ -28,15 +28,16 @@ export default {
 #topbar {
   padding-left: 10%;
   padding-right: 10%;
-  margin-bottom: 20px;
   text-align: left;
   background-color: white;
   height: 80px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .logo {
+  float: right;
   margin-top: 15px;
-  margin-left: 30%;
+  margin-right: 10%;
   width: 50px;
   height: 50px;
 }

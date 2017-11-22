@@ -19,4 +19,10 @@ export default {
   color: #2c3e50;
   margin: 0;
 }
+
+body {
+  background-color: rgb(222, 222, 222);
+  padding: 0;
+  margin: 0;
+}
 </style>
