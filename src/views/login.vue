@@ -156,10 +156,10 @@ export default {
 #login-form-container {
   margin-left: auto;
   margin-right: auto;
-  margin-top: 10%;
+  margin-top: 5%;
   padding: 20px;
   /* border-radius: 3px; */
-  width: 50%;
+  width: 60%;
   background-color: white;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
 }

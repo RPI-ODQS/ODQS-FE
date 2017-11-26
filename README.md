@@ -1,6 +1,6 @@
 # odqs-fe
 
-> Front-end of our RPI Online Database Query System 
+> Front-end of our RPI Online Database Query System
 
 ## Build Setup
 
