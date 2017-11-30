@@ -6,7 +6,7 @@
       <el-button class="management-button">Add User</el-button>
       <el-button class="management-button">Delete</el-button>
       <div class="management-table-container">
-        <el-table :data="dataTable"
+        <el-table :data="userInfoTable"
             highlight-current-row
             @current-change="handleDataRowSelect">
           <el-table-column type="selection" width="50" header-align="center" />
@@ -22,7 +22,7 @@
           <el-table-column label="Operation" width="100" header-align="center">
             <template slot-scope="scope">
               <el-button
-                @click.native.prevent="editRow(scope.$index, dataTable)"
+                @click.native.prevent="editRow(scope.$index)"
                 type="text" size="small">
                 Edit
               </el-button>
@@ -47,6 +47,22 @@
         </el-table>
       </div>
     </div>
+
+    <!-- edit user info -->
+    <el-dialog title="Edit User Info" v-model="isEditUserDialogVisable">
+      <el-form :model="userInfoForm">
+        <el-form-item label="User Name">
+          <el-input v-model="userInfoForm.username" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="User Password">
+          <el-input v-model="userInfoForm.password" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isEditUserDialogVisable = false">Cancel</el-button>
+        <el-button type="primary" @click="isEditUserDialogVisable = false">Confirm</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -58,8 +74,8 @@ export default {
   data () {
     return {
       type: 'User Management Data',
-      currentUser: '',
-      dataTable: [
+      currentUser: null,
+      userInfoTable: [
         {
           userId: 1,
           userName: 'hhk',
@@ -108,7 +124,13 @@ export default {
       ],
       accessibleBuildings: [
         { buildingId: 1, buildingName: 'B1' }
-      ]
+      ],
+      isEditUserDialogVisable: false,
+      userInfoForm: {
+        username: '',
+        password: ''
+      },
+      isEditBuildingDialogVisable: false
     }
   },
   components: {
@@ -118,8 +140,8 @@ export default {
     handleDataRowSelect (val) {
       this.currentUser = val
     },
-    editRow (index, table) {
-
+    editRow (index) {
+      console.log(index)
     }
   }
 }

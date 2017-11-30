@@ -49,7 +49,7 @@ export default {
 
 .user-name {
   float: right;
-  margin-right: 3vw;
+  margin-right: 2vw;
   font-size: 18px;
   font-weight: 200;
   line-height: 64px;
