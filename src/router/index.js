@@ -5,6 +5,7 @@ import home from '@/views/home'
 import login from '@/views/login'
 import mscopi from '@/views/mscopi'
 import sos from '@/views/sos'
+import management from '@/views/management'
 import notfound from '@/views/notfound'
 
 Vue.use(Router)
@@ -31,6 +32,11 @@ export default new Router({
       path: '/sos',
       name: 'sos',
       component: sos
+    },
+    {
+      path: '/management',
+      name: 'management',
+      component: management
     },
     {
       path: '*',

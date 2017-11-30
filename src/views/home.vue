@@ -3,17 +3,18 @@
     <top-bar></top-bar>
     <div id="choose-building-container">
       <div id="choose-building-title">Please Choose a Building:</div>
-      <el-table :data="buildingList"
-        height="490"
-        highlight-current-row
-        @current-change="handleBuildingSelect">
-        <el-table-column
-          type="index" width="50" align="center" header-align="center">
-        </el-table-column>
-        <el-table-column
-          prop="name" label="Building Name" align="center" header-align="center">
-        </el-table-column>
-      </el-table>
+      <div id="table-container">
+        <el-table :data="buildingList"
+          highlight-current-row
+          @current-change="handleBuildingSelect">
+          <el-table-column
+            type="index" width="50" align="center" header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="name" label="Building Name" align="center" header-align="center">
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
     <div id="choose-table-container">
       <div id="choose-table-title">Please Choose a Data Table:</div>
@@ -84,12 +85,19 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #choose-building-container {
-  margin-top: 10px;
-  margin-left: 1.5%;
-  padding: 1%;
+  margin-top: 2vh;
+  margin-left: 1vw;
+  padding: 1vh 1vw;
   float: left;
-  width: 46%;
+  width: 42vw;
+  height: calc(97vh - 80px);
   background-color: white;
+}
+
+#table-container {
+  width: 42vw;
+  height: calc(97vh - 120px);
+  overflow: scroll;
 }
 
 #choose-building-title, #choose-table-title {
@@ -99,19 +107,19 @@ export default {
 }
 
 #choose-table-container {
-  margin-top: 10px;
-  margin-left: 1%;
-  padding: 1%;
+  margin-top: 2vh;
+  margin-left: 1vw;
+  padding: 1vh 1vw;
   float: left;
-  width: 46%;
-  height: 520px;
+  width: 51vw;
+  height: calc(97vh - 80px);
   background-color: white;
 }
 
 .img-button {
-  padding: 30px;
-  height: 70px;
-  width: 70px;
+  padding: 2vw;
+  height: 7vw;
+  width: 7vw;
   border-radius: 20px;
   background-color: whitesmoke;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -123,9 +131,9 @@ export default {
 }
 
 .chooose-table-button-container {
-  margin: 25% 5%;
-  height: 130px;
-  width: 130px;
+  margin: 20vh 2vw;
+  height: 13vw;
+  width: 13vw;
   float: left;
 }
 </style>

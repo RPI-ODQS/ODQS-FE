@@ -2,7 +2,10 @@
 <div id="topbar">
   <header>
     <img class="logo" src="../assets/logo.png">
-    <span class="title" :span="10">RPI Online System</span>
+    <span class="title">RPI Online System</span>
+    <el-button class="topbar-button" type="text">Logout</el-button>
+    <el-button class="user-management topbar-button" type="text" v-show="isAdmin">management</el-button>
+    <span class="user-name">Welcome, {{ userName }}</span>
   </header>
 </div>
 </template>
@@ -11,6 +14,8 @@
 export default {
   data () {
     return {
+      userName: 'hhk',
+      isAdmin: true
     }
   },
   methods: {
@@ -22,23 +27,38 @@ export default {
 #topbar {
   text-align: left;
   background-color: white;
-  height: 80px;
+  height: 64px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .logo {
   float: left;
-  margin-top: 15px;
-  margin-left: 40px;
-  width: 50px;
-  height: 50px;
+  margin-top: 12px;
+  margin-left: 4vw;
+  width: 40px;
+  height: 40px;
 }
 
 .title {
   float: left;
   margin-left: 10px;
   font-size: 18px;
-  font-weight: bold;
-  line-height: 80px;
+  font-weight: 500;
+  line-height: 64px;
+}
+
+.user-name {
+  float: right;
+  margin-right: 3vw;
+  font-size: 18px;
+  font-weight: 200;
+  line-height: 64px;
+}
+
+.topbar-button {
+  float: right;
+  margin-right: 3vw;
+  margin-top: 10px;
+  font-size: 18px;
 }
 </style>

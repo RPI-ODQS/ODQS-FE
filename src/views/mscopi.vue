@@ -1,29 +1,29 @@
 <template>
   <div class="mscopi">
     <top-bar></top-bar>
-    <div id="data-field-container">
-      <div id="data-table-title">{{ type }} Data Table</div>
-      <el-table :data="dataTable"
-        height="490"
-        highlight-current-row
-        @current-change="handleDataRowSelect">
-        <el-table-column
-          type="index" width="50" align="center" header-align="center">
-        </el-table-column>
-        <el-table-column
-          prop="dataField" label="Data Field" align="center" header-align="center">
-        </el-table-column>
-        <el-table-column
-          prop="value" label="Value" align="center" header-align="center">
-        </el-table-column>
-      </el-table>
+    <div id="mscopi-operation-container">
+      <div id="current-building-info" class="opc-info data-table-title">Building: {{ currentBuilding }}</div>
+      <div id="type-info" class="opc-info data-table-subtitle">{{ type }}</div>
+      <el-button class="mscopi-button">Edit</el-button>
+      <el-button class="mscopi-button">Refresh</el-button>
+      <el-button class="mscopi-button">Export</el-button>
     </div>
-    <div id="operation-container">
-      <div id="current-building-info" class="opc-info">{{ currentBuilding }}</div>
-      <div id="type-info" class="opc-info">{{ type }}</div>
-      <el-button>Edit</el-button>
-      <el-button>Refresh</el-button>
-      <el-button>Export</el-button>
+    <div id="data-field-container">
+      <div id="data-table-container">
+        <el-table :data="dataTable"
+          highlight-current-row
+          @current-change="handleDataRowSelect">
+          <el-table-column
+            type="index" width="50" align="center" header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="dataField" label="Data Field" align="center" header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="value" label="Value" align="center" header-align="center">
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@ export default {
   name: 'mscopi',
   data () {
     return {
-      type: 'MSC',
+      type: 'Mechanical Mystem Configurations',
       currentBuilding: 'B1',
       dataTable: [
         {
@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     handleDataRowSelect (val) {
-      this.currentRow = val
+      this.currentBuilding = val
     }
   }
 }
@@ -58,27 +58,50 @@ export default {
 
 <style scoped>
 #data-field-container {
-  margin-top: 10px;
-  margin-left: 1%;
-  padding: 1%;
+  margin-top: 2vh;
+  margin-left: 1vw;
+  padding: 1vh 1vw;
   float: left;
-  width: 60%;
+  width: 70vw;
+  height: calc(96vh - 80px);
   background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  overflow: scroll;
 }
 
-#operation-container {
-  margin-top: 10px;
-  margin-left: 1%;
-  padding: 1%;
-  float: left;
-  width: 33%;
-  height: 520px;
-  background-color: white;
+#data-table-container {
+  height: calc(96vh - 110px);
+  overflow: scroll;
 }
 
-#data-table-title {
-  margin-left: 15px;
+#mscopi-operation-container {
+  margin-top: 2vh;
+  margin-left: 1vw;
+  padding: 1vh 1vw;
+  float: left;
+  width: 23vw;
+  height: calc(96vh - 80px);
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.data-table-title {
+  margin-left: 10px;
+  margin-top: 10px;
   font-size: 24px;
   text-align: left;
+}
+
+.data-table-subtitle {
+  margin-left: 10px;
+  margin-top: 5px;
+  font-size: 18px;
+  text-align: left;
+  margin-bottom: 3vh;
+}
+
+.mscopi-button {
+  margin: 1vh 0;
+  width: 80%;
 }
 </style>
