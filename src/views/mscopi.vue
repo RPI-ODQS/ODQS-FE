@@ -2,7 +2,7 @@
   <div class="mscopi">
     <top-bar></top-bar>
     <div id="mscopi-operation-container">
-      <div id="current-building-info" class="opc-info data-table-title">Building: {{ currentBuilding }}</div>
+      <div id="current-building-info" class="opc-info data-table-title">Building: {{ building }}</div>
       <div id="type-info" class="opc-info data-table-subtitle">{{ type }}</div>
       <el-button class="mscopi-button">Edit</el-button>
       <el-button class="mscopi-button">Refresh</el-button>
@@ -35,8 +35,8 @@ export default {
   name: 'mscopi',
   data () {
     return {
-      type: 'Mechanical Mystem Configurations',
-      currentBuilding: 'B1',
+      type: '',
+      building: '',
       dataTable: [
         {
           dataField: 'testField',
@@ -50,8 +50,12 @@ export default {
   },
   methods: {
     handleDataRowSelect (val) {
-      this.currentBuilding = val
+      this.building = val
     }
+  },
+  created: function () {
+    this.type = this.$route.query.type
+    this.building = this.$route.query.building
   }
 }
 </script>

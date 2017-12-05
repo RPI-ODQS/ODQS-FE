@@ -1,10 +1,15 @@
 <template>
 <div id="topbar">
   <header>
-    <img class="logo" src="../assets/logo.png">
-    <span class="title">RPI Online System</span>
+    <img class="logo" src="../assets/logo.png" @click="onClickLogoOrTitle">
+    <span class="title" @click="onClickLogoOrTitle">RPI Online System</span>
     <el-button class="topbar-button" type="text">Logout</el-button>
-    <el-button class="user-management topbar-button" type="text" v-show="isAdmin">management</el-button>
+    <el-button class="user-management topbar-button"
+      type="text"
+      @click="onClickManagement"
+      v-show="isAdmin">
+      management
+    </el-button>
     <span class="user-name">Welcome, {{ userName }}</span>
   </header>
 </div>
@@ -19,6 +24,12 @@ export default {
     }
   },
   methods: {
+    onClickLogoOrTitle () {
+      this.$router.push('/')
+    },
+    onClickManagement () {
+      this.$router.push('/management')
+    }
   }
 }
 </script>
@@ -37,14 +48,16 @@ export default {
   margin-left: 4vw;
   width: 40px;
   height: 40px;
+  cursor: pointer;
 }
 
 .title {
   float: left;
-  margin-left: 10px;
+  padding-left: 10px;
   font-size: 18px;
   font-weight: 500;
   line-height: 64px;
+  cursor: pointer;
 }
 
 .user-name {

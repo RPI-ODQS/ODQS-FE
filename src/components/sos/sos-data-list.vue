@@ -44,12 +44,17 @@
           type="datetimerange"
           placeholder="选择时间范围">
         </el-date-picker>
+        <el-button type="primary">Search</el-button>
       </el-form-item>
     </el-form>
+    <div id="sos-data-list-result">
+      <line-chart :data="chartData" :options="chartOptions"></line-chart>
+    </div>
   </div>
 </template>
 
 <script>
+import LineChart from '../charts/line-chart'
 
 export default {
   name: 'sos-data-list',
@@ -62,8 +67,31 @@ export default {
         current: [],
         timeRange: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       },
-      buildingName: 'B1'
+      buildingName: 'B1',
+      chartData: {
+        labels: [
+          'January', 'February', 'March', 'April',
+          'May', 'June', 'July', 'August',
+          'September', 'October', 'November', 'December'
+        ],
+        datasets: [
+          {
+            label: 'Search Result',
+            backgroundColor: '#f87979',
+            data: [
+              40, 20, 30, 40,
+              20, 50, 40, 30,
+              40, 60, 30, 50
+            ]
+          }
+        ]
+      },
+      chartOptions: {
+      }
     }
+  },
+  components: {
+    LineChart
   }
 }
 </script>
@@ -108,5 +136,9 @@ export default {
 .sos-data-list-button {
   margin: 1vh 0;
   width: 90%;
+}
+
+#sos-data-list-result {
+  margin-top: 50px;
 }
 </style>

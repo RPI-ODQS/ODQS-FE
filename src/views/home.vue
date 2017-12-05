@@ -4,14 +4,21 @@
     <div id="choose-building-container">
       <div id="choose-building-title">Please Choose a Building:</div>
       <div id="table-container">
-        <el-table :data="buildingList"
+        <el-table
+          :data="buildingList"
           highlight-current-row
           @current-change="handleBuildingSelect">
           <el-table-column
-            type="index" width="50" align="center" header-align="center">
+            type="index"
+            width="50"
+            align="center"
+            header-align="center">
           </el-table-column>
           <el-table-column
-            prop="name" label="Building Name" align="center" header-align="center">
+            prop="name"
+            label="Building Name"
+            align="center"
+            header-align="center">
           </el-table-column>
         </el-table>
       </div>
@@ -19,15 +26,21 @@
     <div id="choose-table-container">
       <div id="choose-table-title">Please Choose a Data Table:</div>
       <div class="chooose-table-button-container">
-        <img class="img-button" src="../assets/icons/config.png"/>
+        <img class="img-button"
+          src="../assets/icons/config.png"
+          @click="onClickMscopi('Mechanical Mystem Configurations')" />
         <span class="img-button-hint">MSC</span>
       </div>
       <div class="chooose-table-button-container">
-        <img class="img-button" src="../assets/icons/parameters.png"/>
+        <img class="img-button"
+          src="../assets/icons/parameters.png"
+          @click="onClickMscopi('Optimizing Input Parameters', currentRow)" />
         <span class="img-button-hint">OPI</span>
       </div>
       <div class="chooose-table-button-container">
-        <img class="img-button" src="../assets/icons/status.png"/>
+        <img class="img-button"
+          src="../assets/icons/status.png"
+          @click="onClickSos" />
         <span class="img-button-hint">SOS</span>
       </div>
     </div>
@@ -77,6 +90,28 @@ export default {
   methods: {
     handleBuildingSelect (val) {
       this.currentRow = val
+    },
+    onClickMscopi (type) {
+      if (this.currentRow === null) {
+        // TODD: Error
+        this.$notify({
+          title: 'Debug Message',
+          message: 'Please Choose a Building First'
+        })
+      } else {
+        this.$router.push(`/mscopi?type=${type}&building=${this.currentRow.name}`)
+      }
+    },
+    onClickSos () {
+      if (this.currentRow === null) {
+        // TODD: Error
+        this.$notify({
+          title: 'Debug Message',
+          message: 'Please Choose a Building First'
+        })
+      } else {
+        this.$router.push(`/sos?building=${this.currentRow.name}`)
+      }
     }
   }
 }

@@ -141,7 +141,7 @@ export default {
       this.currentUser = val
     },
     editRow (index) {
-      console.log(index)
+      // console.log(index)
     }
   }
 }
@@ -167,7 +167,7 @@ export default {
   padding: 1vh 1vw;
   float: left;
   width: 53vw;
-  height: calc(96vh - 80px);
+  height: calc(97vh - 80px);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
@@ -178,14 +178,14 @@ export default {
   padding: 1vh 1vw;
   float: left;
   width: 40vw;
-  height: calc(96vh - 80px);
+  height: calc(97vh - 80px);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .management-table-container {
   width: 100%;
-  height: calc(96vh - 200px);
+  height: calc(97vh - 200px);
   overflow: scroll;
 }
 </style>

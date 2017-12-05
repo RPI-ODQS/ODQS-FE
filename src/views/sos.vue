@@ -2,19 +2,22 @@
   <div class="sos">
     <top-bar></top-bar>
     <div id="sos-control-bar">
-      <div class="sos-control-bar-title">Building: {{ buildingName }}</div>
-      <div class="sos-control-bar-subtitle">System Operation Status</div>
-      <el-button class="sos-control-bar-button">Refresh</el-button>
-      <el-button class="sos-control-bar-button">Export</el-button>
-      <el-button class="sos-control-bar-button">Show Selected</el-button>
-      <el-button class="sos-control-bar-button">Show Photos</el-button>
+      <div class="sos-control-bar-title">Building: {{ building }}</div>
+      <div class="sos-control-bar-subtitle">{{ displayInfo }}</div>
+      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Details'">Refresh</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Details'">Export</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Details'">Show Selected</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Details'">Show Photos</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab === 'Details'">Take Photo</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab === 'Details'">Download</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab === 'Details'">Delete</el-button>
     </div>
     <div id="tabs-container">
-      <el-tabs v-model="activeTab" type="card">
-        <el-tab-pane label="SOS Data List" name="first">
+      <el-tabs v-model="activeTab" type="card" @tab-click="handleSwitch">
+        <el-tab-pane label="SOS Data List" name="DataList">
           <sos-data-list/>
         </el-tab-pane>
-        <el-tab-pane label="SOS Details" name="second">
+        <el-tab-pane label="SOS Details" name="Details">
           <sos-details/>
         </el-tab-pane>
       </el-tabs>
@@ -31,14 +34,27 @@ export default {
   name: 'sos',
   data () {
     return {
-      activeTab: 'first',
-      buildingName: 'B1'
+      activeTab: 'DataList',  // 'DataList' or 'DataDetails'
+      building: 'B1',
+      displayInfo: 'System Operation Status'
     }
   },
   components: {
     TopBar: topbar,
     SosDataList: sosDataList,
     sosDetails: sosDetails
+  },
+  methods: {
+    handleSwitch (tab, event) {
+      if (tab.name === 'DataList') {
+        this.displayInfo = 'System Operation Status'
+      } else {
+        this.displayInfo = 'Web Camera'
+      }
+    }
+  },
+  created: function () {
+    this.building = this.$route.query.building
   }
 }
 </script>
@@ -65,6 +81,7 @@ export default {
   height: calc(96vh - 80px);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  overflow: scroll;
 }
 
 .sos-control-bar-title {

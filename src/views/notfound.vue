@@ -1,7 +1,9 @@
 <template>
-  <div class="sos">
+  <div class="notfound">
     <top-bar></top-bar>
-    <h1>404 Not Found</h1>
+    <div class="notfound-container">
+      <h1 class="notfound-message">404 Not Found ...</h1>
+    </div>
   </div>
 </template>
 
@@ -9,7 +11,7 @@
 import topbar from '../components/topbar'
 
 export default {
-  name: 'sos',
+  name: 'notfound',
   data () {
     return {
     }
@@ -19,3 +21,20 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.notfound-container {
+  margin-top: 2vh;
+  margin-left: 1vw;
+  padding: 1vh 1vw;
+  float: left;
+  width: 96vw;
+  height: calc(97vh - 80px);
+  background-color: white;
+}
+
+.notfound-message {
+  margin-top: 10vh;
+}
+</style>
+
