@@ -54,34 +54,12 @@ export default {
   name: 'home',
   data () {
     return {
-      currentRow: null,
-      buildingList: [
-        {
-          name: 'B1'
-        }, {
-          name: 'B2'
-        }, {
-          name: 'B3'
-        }, {
-          name: 'B4'
-        }, {
-          name: 'B5'
-        }, {
-          name: 'B6'
-        }, {
-          name: 'B7'
-        }, {
-          name: 'B8'
-        }, {
-          name: 'B9'
-        }, {
-          name: 'B10'
-        }, {
-          name: 'B11'
-        }, {
-          name: 'B12'
-        }
-      ]
+      currentRow: null
+    }
+  },
+  computed: {
+    buildingList () {
+      return this.$store.state.buildingList
     }
   },
   components: {
@@ -99,7 +77,7 @@ export default {
           message: 'Please Choose a Building First'
         })
       } else {
-        this.$router.push(`/mscopi?type=${type}&building=${this.currentRow.name}`)
+        this.$router.push(`/mscopi?type=${type}&id=${this.currentRow.id}&name=${this.currentRow.name}`)
       }
     },
     onClickSos () {
