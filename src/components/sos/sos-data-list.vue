@@ -2,7 +2,7 @@
   <div class="sos-data-list">
     <div class="sos-data-list-title">Select Data Field:</div>
     <el-form id="sos-data-select-form"
-          ref="selectedForm" 
+          ref="selectedForm"
           :model="selectedForm"
           label-position="left"
           label-width="100px">
@@ -48,7 +48,11 @@
       </el-form-item>
     </el-form>
     <div id="sos-data-list-result">
-      <line-chart :data="chartData" :options="chartOptions"></line-chart>
+      <line-chart
+        :chart-data="chartData"
+        :options="chartOptions"
+        :height="220"
+      />
     </div>
   </div>
 </template>

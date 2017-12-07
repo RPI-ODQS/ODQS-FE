@@ -46,7 +46,11 @@ export default new Vuex.Store({
         id: 12,
         name: 'B12'
       }
-    ]
+    ],
+    userInfo: {
+      userName: null,
+      token: null
+    }
   },
   mutations: {
     updateBuildingList: (state, newList) => {

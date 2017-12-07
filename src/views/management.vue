@@ -1,29 +1,59 @@
 <template>
   <div class="management">
-    <top-bar></top-bar>
+    <top-bar/>
     <div id="management-user-data-container">
       <div class="management-title">Choose a User:</div>
-      <el-button class="management-button">Add User</el-button>
-      <el-button class="management-button">Delete</el-button>
+      <el-button
+        class="management-button"
+      >
+        Add User
+      </el-button>
+      <el-button
+        class="management-button"
+      >
+        Delete
+      </el-button>
       <div class="management-table-container">
-        <el-table :data="userInfoTable"
-            highlight-current-row
-            @current-change="handleDataRowSelect">
-          <el-table-column type="selection" width="50" header-align="center" />
+        <el-table
+          :data="userInfoTable"
+          highlight-current-row
+          @current-change="handleDataRowSelect"
+        >
           <el-table-column
-            prop="userId" label="User ID" width="70" align="center" header-align="center">
-          </el-table-column>
+            type="selection"
+            width="50"
+            header-align="center"
+          />
           <el-table-column
-            prop="userName" label="User Name" align="center" header-align="center">
-          </el-table-column>
+            prop="userId"
+            label="User ID"
+            width="70"
+            align="center"
+            header-align="center"
+          />
           <el-table-column
-            prop="userLevel" label="User Level" align="center" header-align="center">
-          </el-table-column>
-          <el-table-column label="Operation" width="100" header-align="center">
+            prop="userName"
+            label="User Name"
+            align="center"
+            header-align="center"
+          />
+          <el-table-column
+            prop="userLevel"
+            label="User Level"
+            align="center"
+            header-align="center"
+          />
+          <el-table-column
+            label="Operation"
+            width="100"
+            header-align="center"
+          >
             <template slot-scope="scope">
               <el-button
-                @click.native.prevent="editRow(scope.$index)"
-                type="text" size="small">
+                @click="editUser(scope.$index)"
+                type="text"
+                size="small"
+              >
                 Edit
               </el-button>
             </template>
@@ -31,37 +61,106 @@
         </el-table>
       </div>
     </div>
+
     <div id="management-user-accessible-buildings-container">
       <div class="management-title">Accessible Buildings:</div>
-      <el-button class="management-button">Add Building</el-button>
-      <el-button class="management-button">Delete</el-button>
+      <el-button
+        class="management-button"
+        @click="addBuilding"
+      >
+        Add Building
+      </el-button>
+      <el-button
+        class="management-button"
+      >
+        Delete
+      </el-button>
       <div class="management-table-container">
         <el-table :data="accessibleBuildings">
-          <el-table-column type="selection" width="50" header-align="center" />
           <el-table-column
-            prop="buildingId" label="User ID" width="70" align="center" header-align="center">
-          </el-table-column>
+            type="selection"
+            width="50"
+            header-align="center"
+          />
           <el-table-column
-            prop="buildingName" label="User Name" align="center" header-align="center">
-          </el-table-column>
+            prop="buildingId"
+            label="User ID"
+            width="70"
+            align="center"
+            header-align="center"
+          />
+          <el-table-column
+            prop="buildingName"
+            label="User Name"
+            align="center"
+            header-align="center"
+          />
         </el-table>
       </div>
     </div>
 
-    <!-- edit user info -->
-    <el-dialog title="Edit User Info" v-model="isEditUserDialogVisable">
-      <el-form :model="userInfoForm">
-        <el-form-item label="User Name">
-          <el-input v-model="userInfoForm.username" auto-complete="off"></el-input>
+    <!-- Dialog: edit user info -->
+    <el-dialog
+      :title="editUserTitle"
+      :visible.sync="isEditUserDialogVisable"
+    >
+      <el-form
+        :model="userInfoForm"
+        label-width="110px"
+      >
+        <el-form-item label="New Name">
+          <el-input
+            v-model="userInfoForm.username"
+          />
         </el-form-item>
-        <el-form-item label="User Password">
-          <el-input v-model="userInfoForm.password" auto-complete="off"></el-input>
+        <el-form-item label="New Password">
+          <el-input
+            v-model="userInfoForm.password"
+          />
+        </el-form-item>
+        <el-form-item label="New Level">
+          <el-input
+            v-model="userInfoForm.level"
+          />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="isEditUserDialogVisable = false">Cancel</el-button>
-        <el-button type="primary" @click="isEditUserDialogVisable = false">Confirm</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer">
+        <el-button
+          @click="isEditUserDialogVisable = false"
+        >
+          Cancel
+        </el-button>
+        <el-button
+          type="primary"
+          @click="isEditUserDialogVisable = false"
+        >
+          Confirm
+        </el-button>
       </div>
+    </el-dialog>
+
+    <!-- Dialog: edit building -->
+    <el-dialog
+      :title="editBuildingTitle"
+      :visible.sync="isEditBuildingDialogVisable"
+    >
+      <el-table
+        :data="buildingInfoTable"
+      >
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="180"
+          header-align="center"
+        />
+        <el-table-column
+          prop="name"
+          label="Name"
+          header-align="center"
+        />
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -82,55 +181,53 @@ export default {
           userLevel: 'User'
         },
         {
-          userId: 1,
-          userName: 'hhk',
+          userId: 2,
+          userName: 'zmy',
           userLevel: 'User'
         },
         {
-          userId: 1,
-          userName: 'hhk',
+          userId: 3,
+          userName: 'crh',
           userLevel: 'User'
         },
         {
-          userId: 1,
-          userName: 'hhk',
+          userId: 4,
+          userName: 'zzq',
           userLevel: 'User'
         },
         {
-          userId: 1,
-          userName: 'hhk',
+          userId: 5,
+          userName: 'wyz',
           userLevel: 'User'
         },
         {
-          userId: 1,
-          userName: 'hhk',
+          userId: 6,
+          userName: 'lys',
           userLevel: 'User'
         },
         {
-          userId: 1,
-          userName: 'hhk',
-          userLevel: 'User'
-        },
-        {
-          userId: 1,
-          userName: 'hhk',
-          userLevel: 'User'
-        },
-        {
-          userId: 1,
-          userName: 'hhk',
+          userId: 7,
+          userName: 'www',
           userLevel: 'User'
         }
       ],
       accessibleBuildings: [
         { buildingId: 1, buildingName: 'B1' }
       ],
+
       isEditUserDialogVisable: false,
+      editUserTitle: null,
       userInfoForm: {
-        username: '',
-        password: ''
+        username: null,
+        password: null,
+        level: null
       },
-      isEditBuildingDialogVisable: false
+
+      isEditBuildingDialogVisable: false,
+      editBuildingTitle: null,
+      buildingInfoTable: [
+        { id: 1, name: 'B1' }
+      ]
     }
   },
   components: {
@@ -140,8 +237,21 @@ export default {
     handleDataRowSelect (val) {
       this.currentUser = val
     },
-    editRow (index) {
-      // console.log(index)
+    editUser (index) {
+      console.log(index)
+      this.editUserTitle = 'Editing User: ' + this.userInfoTable[index].userName
+      this.isEditUserDialogVisable = true
+    },
+    addBuilding () {
+      if (this.currentUser === null) {
+        this.$notify({
+          title: 'Warning',
+          message: 'Please Choose a User First'
+        })
+      } else {
+        this.editBuildingTitle = 'Add Building for ' + this.currentUser.userName
+        this.isEditBuildingDialogVisable = true
+      }
     }
   }
 }

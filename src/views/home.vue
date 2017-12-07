@@ -1,46 +1,53 @@
 <template>
   <div class="home">
-    <top-bar></top-bar>
+    <top-bar/>
     <div id="choose-building-container">
       <div id="choose-building-title">Please Choose a Building:</div>
       <div id="table-container">
         <el-table
           :data="buildingList"
           highlight-current-row
-          @current-change="handleBuildingSelect">
+          @current-change="handleBuildingSelect"
+        >
           <el-table-column
             type="index"
             width="50"
             align="center"
-            header-align="center">
-          </el-table-column>
+            header-align="center"
+          />
           <el-table-column
             prop="name"
             label="Building Name"
             align="center"
-            header-align="center">
-          </el-table-column>
+            header-align="center"
+          />
         </el-table>
       </div>
     </div>
     <div id="choose-table-container">
       <div id="choose-table-title">Please Choose a Data Table:</div>
       <div class="chooose-table-button-container">
-        <img class="img-button"
+        <img
+          class="img-button"
           src="../assets/icons/config.png"
-          @click="onClickMscopi('Mechanical Mystem Configurations')" />
+          @click="onClickMscopi('Mechanical Mystem Configurations')"
+        />
         <span class="img-button-hint">MSC</span>
       </div>
       <div class="chooose-table-button-container">
-        <img class="img-button"
+        <img
+          class="img-button"
           src="../assets/icons/parameters.png"
-          @click="onClickMscopi('Optimizing Input Parameters', currentRow)" />
+          @click="onClickMscopi('Optimizing Input Parameters', currentRow)"
+        />
         <span class="img-button-hint">OPI</span>
       </div>
       <div class="chooose-table-button-container">
-        <img class="img-button"
+        <img
+          class="img-button"
           src="../assets/icons/status.png"
-          @click="onClickSos" />
+          @click="onClickSos"
+        />
         <span class="img-button-hint">SOS</span>
       </div>
     </div>

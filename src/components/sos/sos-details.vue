@@ -1,23 +1,28 @@
 <template>
   <div class="sos-details">
-    <el-form id="sos-details-select-form"
-          ref="queryForm" 
-          :model="queryForm"
-          label-position="left"
-          :inline="true">
+    <el-form
+      id="sos-details-select-form"
+      ref="queryForm"
+      :model="queryForm"
+      label-position="left"
+      :inline="true"
+    >
       <el-form-item class="sos-details-form-item">
         <el-date-picker
           v-model="queryForm.timeRange"
           type="datetimerange"
-          placeholder="选择时间范围">
-        </el-date-picker>
+          placeholder="选择时间范围"
+        />
       </el-form-item>
       <el-form-item class="sos-details-form-item">
         <el-button type="primary">Search</el-button>
       </el-form-item>
     </el-form>
-    <vue-select-image :dataImages="photos" :is-multiple="true" 
-      @onSelectMultipleImage="onSelectMultipleImage" />
+    <vue-select-image
+      :dataImages="photos"
+      :is-multiple="true"
+      @onSelectMultipleImage="onSelectMultipleImage"
+    />
   </div>
 </template>
 
