@@ -12,9 +12,11 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "chart.js": "^2.7.1",
     "element-ui": "^2.0.5",
     "vue": "^2.5.2",
+    "vue-axios": "^2.0.2",
     "vue-chartjs": "^3.0.2",
     "vue-router": "^3.0.1",
     "vue-select-image": "^1.0.3",

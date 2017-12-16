@@ -80,12 +80,36 @@ export default {
         ],
         datasets: [
           {
-            label: 'Search Result',
-            backgroundColor: '#f87979',
+            label: 'Temperture 1',
+            backgroundColor: 'RGBA(18, 137, 123, 0.4)',
             data: [
               40, 20, 30, 40,
               20, 50, 40, 30,
               40, 60, 30, 50
+            ]
+          }, {
+            label: 'Temperture 2',
+            backgroundColor: 'RGBA(252, 63, 29, 0.4)',
+            data: [
+              20, 50, 80, 60,
+              50, 30, 20, 60,
+              20, 70, 20, 70
+            ]
+          }, {
+            label: 'Temperture 3',
+            backgroundColor: 'RGBA(255, 253, 56, 0.40)',
+            data: [
+              10, 40, 70, 20,
+              30, 30, 30, 70,
+              20, 40, 50, 60
+            ]
+          }, {
+            label: 'Temperture 4',
+            backgroundColor: 'RGBA(79, 110, 251, 0.4)',
+            data: [
+              40, 50, 60, 70,
+              60, 50, 30, 20,
+              20, 30, 50, 60
             ]
           }
         ]

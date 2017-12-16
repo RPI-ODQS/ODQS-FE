@@ -1,20 +1,20 @@
 <template>
-  <div class="sos-details">
+  <div class="sos-photo">
     <el-form
-      id="sos-details-select-form"
+      id="sos-photo-select-form"
       ref="queryForm"
       :model="queryForm"
       label-position="left"
       :inline="true"
     >
-      <el-form-item class="sos-details-form-item">
+      <el-form-item class="sos-photo-form-item">
         <el-date-picker
           v-model="queryForm.timeRange"
           type="datetimerange"
           placeholder="选择时间范围"
         />
       </el-form-item>
-      <el-form-item class="sos-details-form-item">
+      <el-form-item class="sos-photo-form-item">
         <el-button type="primary">Search</el-button>
       </el-form-item>
     </el-form>
@@ -30,7 +30,7 @@
 import VueSelectImage from 'vue-select-image'
 
 export default {
-  name: 'sos-details',
+  name: 'sos-photo',
   data () {
     return {
       queryForm: {
@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style scoped>
-#sos-details-select-form {
+#sos-photo-select-form {
   text-align: left;
   margin-left: 3vw;
 }

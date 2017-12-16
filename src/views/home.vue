@@ -31,7 +31,7 @@
           class="img-button"
           src="../assets/icons/config.png"
           @click="onClickMscopi('Mechanical Mystem Configurations')"
-        />
+        >
         <span class="img-button-hint">MSC</span>
       </div>
       <div class="chooose-table-button-container">
@@ -39,7 +39,7 @@
           class="img-button"
           src="../assets/icons/parameters.png"
           @click="onClickMscopi('Optimizing Input Parameters', currentRow)"
-        />
+        >
         <span class="img-button-hint">OPI</span>
       </div>
       <div class="chooose-table-button-container">
@@ -47,7 +47,7 @@
           class="img-button"
           src="../assets/icons/status.png"
           @click="onClickSos"
-        />
+        >
         <span class="img-button-hint">SOS</span>
       </div>
     </div>
@@ -98,6 +98,8 @@ export default {
         this.$router.push(`/sos?building=${this.currentRow.name}`)
       }
     }
+  },
+  created: function () {
   }
 }
 </script>

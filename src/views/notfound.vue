@@ -1,6 +1,6 @@
 <template>
   <div class="notfound">
-    <top-bar></top-bar>
+    <top-bar/>
     <div class="notfound-container">
       <h1 class="notfound-message">404 Not Found ...</h1>
     </div>

@@ -104,7 +104,7 @@
           class="short-form-item"
           label="Brand">
           <el-input
-            v-model="mscForm.equipmentBrand"
+            v-model="mscForm.waterHeaterBrand"
             :disabled="!isEditing"
           />
         </el-form-item>
@@ -112,15 +112,25 @@
           class="short-form-item"
           label="Capacity">
           <el-input
-            v-model="mscForm.equipmentCapacity"
+            v-model="mscForm.waterHeaterCapacity"
             :disabled="!isEditing"
           />
         </el-form-item>
         <el-form-item
           class="short-form-item"
-          label="Efficiency">
+          label="Efficiency"
+        >
           <el-input
-            v-model="mscForm.ratedEfficiency"
+            v-model="mscForm.waterHeaterRatedEfficiency"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+        <el-form-item
+          class="short-form-item"
+          label="Storage"
+        >
+          <el-input
+            v-model="mscForm.storageCapacity"
             :disabled="!isEditing"
           />
         </el-form-item>
@@ -130,14 +140,18 @@
       <el-form
         ref="opiForm"
         :model="opiForm"
-        label-width="80px"
         v-if="type === 'Optimizing Input Parameters'"
       >
-        <!-- <el-form-item
-          class="short-form-item"
-          label="System Demand">
-          <el-input v-model="opiForm.systemDemand"></el-input>
-        </el-form-item> -->
+        <div class="opi-form-tag">System Demand</div>
+        <el-form-item>
+          <el-input
+            v-for="(item, index) in opiForm.systemDemand"
+            :key="index"
+            class="opi-data-array-input-item"
+            :v-model="item"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
       </el-form>
     </div>
   </div>
@@ -160,12 +174,46 @@ export default {
         zipCode: null,
         isActive: null,
         startingDate: null,
-        equipmentBrand: null,
-        equipmentCapacity: null,
-        ratedEfficiency: null
+        waterHeaterBrand: null,
+        waterHeaterCapacity: null,
+        waterHeaterRatedEfficiency: null,
+        storageCapacity: null
       },
       opiForm: {
-
+        systemDemand: [
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null
+        ],
+        electricityPrice: [
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null
+        ],
+        ambientTemperature: [
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null
+        ],
+        solarEnergyOutput: [
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null
+        ],
+        demandResponse: [
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null,
+          null, null, null, null, null, null
+        ],
+        isReqForWP: false,
+        inputVar1: null,
+        inputVar2: null,
+        inputVar3: null
       }
     }
   },
@@ -251,5 +299,18 @@ export default {
 .short-form-item {
   float: left;
   width: 50%;
+}
+
+.opi-form-tag {
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.opi-data-array-input-item {
+  width: 15%;
+  float: left;
+  margin-right: 1%;
+  margin-bottom:5px;
 }
 </style>

@@ -4,21 +4,21 @@
     <div id="sos-control-bar">
       <div class="sos-control-bar-title">Building: {{ building }}</div>
       <div class="sos-control-bar-subtitle">{{ displayInfo }}</div>
-      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Details'">Refresh</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Details'">Export</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Details'">Show Selected</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Details'">Show Photos</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab === 'Details'">Take Photo</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab === 'Details'">Download</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab === 'Details'">Delete</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Photo'">Refresh</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Photo'">Export</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Photo'">Show Selected</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Photo'">Show Photos</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab === 'Photo'">Take Photo</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab === 'Photo'">Download</el-button>
+      <el-button class="sos-control-bar-button" v-if="activeTab === 'Photo'">Delete</el-button>
     </div>
     <div id="tabs-container">
       <el-tabs v-model="activeTab" type="card" @tab-click="handleSwitch">
         <el-tab-pane label="SOS Data List" name="DataList">
           <sos-data-list/>
         </el-tab-pane>
-        <el-tab-pane label="SOS Details" name="Details">
-          <sos-details/>
+        <el-tab-pane label="SOS Photo" name="Photo">
+          <sos-photo/>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -28,13 +28,13 @@
 <script>
 import topbar from '../components/topbar'
 import sosDataList from '../components/sos/sos-data-list'
-import sosDetails from '../components/sos/sos-details'
+import sosPhoto from '../components/sos/sos-photo'
 
 export default {
   name: 'sos',
   data () {
     return {
-      activeTab: 'DataList',  // 'DataList' or 'DataDetails'
+      activeTab: 'DataList',  // 'DataList' or 'Photo'
       building: 'B1',
       displayInfo: 'System Operation Status'
     }
@@ -42,7 +42,7 @@ export default {
   components: {
     TopBar: topbar,
     SosDataList: sosDataList,
-    sosDetails: sosDetails
+    sosPhoto: sosPhoto
   },
   methods: {
     handleSwitch (tab, event) {
