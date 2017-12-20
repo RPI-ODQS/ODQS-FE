@@ -11,13 +11,14 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
-        target: 'http://172.18.70.214',  // 设置你调用的接口域名和端口号
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '/'  // 要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
-        }
-      }
+      // '/api': {
+      //   // target: 'http://172.18.70.214',  // 设置你调用的接口域名和端口号
+      //   target: 'http://192.168.31.224:5000',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/api': '/'  // 要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
+      //   }
+      // }
     },
 
     // Various Dev Server settings

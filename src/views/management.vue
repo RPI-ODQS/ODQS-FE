@@ -11,6 +11,7 @@
       </el-button>
       <el-button
         class="management-button"
+        @click="onClickDelete"
       >
         Delete
       </el-button>
@@ -18,7 +19,8 @@
         <el-table
           :data="userList"
           highlight-current-row
-          @current-change="handleDataRowSelect"
+          @current-change="handleUserRowSelect"
+          @selection-change="handleUserSelectionChange"
           v-loading="isLoadingUsers"
         >
           <el-table-column
@@ -40,8 +42,8 @@
             header-align="center"
           />
           <el-table-column
-            prop="userLevel"
-            label="User Level"
+            prop="role"
+            label="User role"
             align="center"
             header-align="center"
           />
@@ -78,7 +80,9 @@
         Delete
       </el-button>
       <div class="management-table-container">
-        <el-table :data="accessibleBuildings">
+        <el-table
+          :data="accessibleBuildings"
+        >
           <el-table-column
             type="selection"
             width="50"
@@ -122,8 +126,8 @@
             v-model="userInfoForm.password"
           />
         </el-form-item>
-        <el-form-item label="Level">
-          <el-radio-group v-model="userInfoForm.level">
+        <el-form-item label="role">
+          <el-radio-group v-model="userInfoForm.role">
             <el-radio :label="1">Super Admin</el-radio>
             <el-radio :label="2">Admin</el-radio>
             <el-radio :label="3">User</el-radio>
@@ -201,13 +205,8 @@ export default {
       type: 'User Management Data',
       isLoadingUsers: false,
       currentUser: null,
-      userList: [
-        // {
-        //   userId: 1,
-        //   userName: 'hhk',
-        //   userLevel: 'User'
-        // }
-      ],
+      currentSelectedUsers: [],
+      userList: [],
       accessibleBuildings: [
         // {
         //   buildingId: 1,
@@ -220,7 +219,8 @@ export default {
       userInfoForm: {
         username: null,
         password: null,
-        level: null
+        role: null,
+        buildingList: []
       },
 
       isEditBuildingDialogVisable: false,
@@ -234,23 +234,23 @@ export default {
     TopBar: topbar
   },
   methods: {
-    handleDataRowSelect (val) {
+    handleUserRowSelect (val) {
       this.currentUser = val
+    },
+    handleUserSelectionChange (val) {
+      this.currentSelectedUsers = val
     },
     onClickAddUser () {
       this.editUserTitle = 'Add User'
       this.isEditUserDialogVisable = true
     },
     onClickEditUser (index) {
-      const levelMap = {
-        'Super Admin': 1,
-        'Admin': 2,
-        'User': 3
-      }
       this.editUserTitle = 'Edit User: ' + this.userList[index].userName
       this.userInfoForm.username = this.userList[index].userName
       this.userInfoForm.password = '********'
-      this.userInfoForm.level = levelMap[this.userList[index].userLevel]
+      this.userInfoForm.role = this.userList[index].userrole
+      this.userInfoForm.userId = this.userList[index].userId
+      this.userInfoForm.buildingList = this.userList[index].buildingList
       this.isEditUserDialogVisable = true
     },
     onClickConfirmEditUserDialog () {
@@ -259,16 +259,40 @@ export default {
         this.$http.put('/user', {
           username: this.userInfoForm.username,
           password: this.userInfoForm.password,
-          level: this.userInfoForm.level,
+          role: this.userInfoForm.role,
           buildingList: []
+        }, {
+          auth: {
+            username: this.$store.state.userInfo.token,
+            password: 'unused'
+          }
         })
         .then((res) => {
-          console.log(res)
           this.$notify({
             title: 'Success',
             message: 'Add User Success'
           })
           this.isEditUserDialogVisable = false
+        })
+      } else {
+        // edit user
+        this.$http.post('/update/user', {
+          userId: this.userInfoForm.userId,
+          newUsername: this.userInfoForm.username,
+          newPassword: this.userInfoForm.password === '********' ? '' : this.userInfoForm.password,
+          role: this.userInfoForm.role,
+          newBuildingList: this.userInfoForm.buildingList
+        }, {
+          auth: {
+            username: this.$store.state.userInfo.token,
+            password: 'unused'
+          }
+        })
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
         })
       }
     },
@@ -283,6 +307,26 @@ export default {
         this.isEditBuildingDialogVisable = true
       }
     },
+    onClickDelete () {
+      if (this.currentSelectedUsers.length > 0) {
+        // console.log(this.currentSelectedUsers[0].userId)
+        this.$http.delete('/user', {
+          auth: {
+            username: this.$store.state.userInfo.token,
+            password: 'unused'
+          },
+          params: {
+            userId: this.currentSelectedUsers[0].userId
+          }
+        })
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      }
+    },
     getAllUsers () {
       this.isLoadingUsers = true
       this.$http.get('/user', {
@@ -291,11 +335,11 @@ export default {
           password: 'unused'
         },
         params: {
-          conditions: null
+          conditions: ''
         }
       })
       .then(res => {
-        console.log(res)
+        this.userList = res.data.users
         this.isLoadingUsers = false
       })
       .catch(err => {

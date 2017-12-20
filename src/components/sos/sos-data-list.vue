@@ -127,30 +127,30 @@ export default {
   },
   methods: {
     export () {
-      console.log('export')
-      this.$http.get('/sos/csv', {
-        auth: {
-          username: this.$store.state.userInfo.token,
-          password: 'unused'
-        },
-        params: {
-          buildingId: 1,
-          sensorsIds: {
-            temperature: ['temperature 1'],
-            flow: [],
-            pressure: [],
-            current: []
-          },
-          timeFrom: '2017-10-10 1',
-          timeTo: '2017-10-11 11'
-        }
-      })
-      .then(res => {
-        console.log(res)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      // console.log('export')
+      // this.$http.get('/sos/csv', {
+      //   auth: {
+      //     username: this.$store.state.userInfo.token,
+      //     password: 'unused'
+      //   },
+      //   params: {
+      //     buildingId: 1,
+      //     sensorsIds: {
+      //       temperature: ['temperature 1'],
+      //       flow: [],
+      //       pressure: [],
+      //       current: []
+      //     },
+      //     timeFrom: '2017-10-10 1',
+      //     timeTo: '2017-10-11 11'
+      //   }
+      // })
+      // .then(res => {
+      //   console.log(res)
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
     },
     getSosHeader () {
       // this.isLoadingHeader = true

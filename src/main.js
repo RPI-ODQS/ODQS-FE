@@ -21,7 +21,8 @@ Vue.use(VueAxios, axios)
 
 // axios settings
 // use proxy instead
-Vue.axios.defaults.baseURL = '/api/'
+// Vue.axios.defaults.baseURL = '/api/'
+Vue.axios.defaults.baseURL = 'http://192.168.31.224:5000/'
 
 /* eslint-disable no-new */
 new Vue({
