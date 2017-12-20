@@ -30,7 +30,7 @@
           <el-checkbox label="Pressure 4" name="pressure"></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item class="sos-data-form-item" label="Pressure">
+      <el-form-item class="sos-data-form-item" label="Current">
         <el-checkbox-group v-model="selectedForm.current">
           <el-checkbox label="Current 1" name="current"></el-checkbox>
           <el-checkbox label="Current 2" name="current"></el-checkbox>
@@ -49,7 +49,7 @@
     </el-form>
     <div id="sos-data-list-result">
       <line-chart
-        :chart-data="chartData"
+        :chart-data="temperatureChartData"
         :options="chartOptions"
         :height="220"
       />
@@ -72,7 +72,7 @@ export default {
         timeRange: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       },
       buildingName: 'B1',
-      chartData: {
+      temperatureChartData: {
         labels: [
           'January', 'February', 'March', 'April',
           'May', 'June', 'July', 'August',
@@ -81,7 +81,7 @@ export default {
         datasets: [
           {
             label: 'Temperture 1',
-            backgroundColor: 'RGBA(18, 137, 123, 0.4)',
+            backgroundColor: 'RGBA(188, 223, 250, 0.25)',
             data: [
               40, 20, 30, 40,
               20, 50, 40, 30,
@@ -89,7 +89,7 @@ export default {
             ]
           }, {
             label: 'Temperture 2',
-            backgroundColor: 'RGBA(252, 63, 29, 0.4)',
+            backgroundColor: 'RGBA(103, 182, 244, 0.25)',
             data: [
               20, 50, 80, 60,
               50, 30, 20, 60,
@@ -97,7 +97,7 @@ export default {
             ]
           }, {
             label: 'Temperture 3',
-            backgroundColor: 'RGBA(255, 253, 56, 0.40)',
+            backgroundColor: 'RGBA(179, 158, 217, 0.25)',
             data: [
               10, 40, 70, 20,
               30, 30, 30, 70,
@@ -105,7 +105,7 @@ export default {
             ]
           }, {
             label: 'Temperture 4',
-            backgroundColor: 'RGBA(79, 110, 251, 0.4)',
+            backgroundColor: 'RGBA(79, 110, 251, 0.25)',
             data: [
               40, 50, 60, 70,
               60, 50, 30, 20,

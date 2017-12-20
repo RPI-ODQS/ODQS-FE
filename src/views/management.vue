@@ -5,6 +5,7 @@
       <div class="management-title">Choose a User:</div>
       <el-button
         class="management-button"
+        @click="onClickAddUser"
       >
         Add User
       </el-button>
@@ -50,7 +51,7 @@
           >
             <template slot-scope="scope">
               <el-button
-                @click="editUser(scope.$index)"
+                @click="onClickEditUser(scope.$index)"
                 type="text"
                 size="small"
               >
@@ -66,7 +67,7 @@
       <div class="management-title">Accessible Buildings:</div>
       <el-button
         class="management-button"
-        @click="addBuilding"
+        @click="onClickAddBuilding"
       >
         Add Building
       </el-button>
@@ -138,7 +139,7 @@
         </el-button>
         <el-button
           type="primary"
-          @click="isEditUserDialogVisable = false"
+          @click="onClickConfirmEditUserDialog"
         >
           Confirm
         </el-button>
@@ -154,9 +155,9 @@
         :data="buildingInfoTable"
       >
         <el-table-column
-            type="selection"
-            width="50"
-            header-align="center"
+          type="selection"
+          width="50"
+          header-align="center"
         />
         <el-table-column
           prop="id"
@@ -199,38 +200,17 @@ export default {
       type: 'User Management Data',
       currentUser: null,
       userList: [
-        {
-          userId: 1,
-          userName: 'hhk',
-          userLevel: 'User'
-        }, {
-          userId: 2,
-          userName: 'zmy',
-          userLevel: 'User'
-        }, {
-          userId: 3,
-          userName: 'crh',
-          userLevel: 'User'
-        }, {
-          userId: 4,
-          userName: 'zzq',
-          userLevel: 'User'
-        }, {
-          userId: 5,
-          userName: 'wyz',
-          userLevel: 'User'
-        }, {
-          userId: 6,
-          userName: 'lys',
-          userLevel: 'User'
-        }, {
-          userId: 7,
-          userName: 'www',
-          userLevel: 'User'
-        }
+        // {
+        //   userId: 1,
+        //   userName: 'hhk',
+        //   userLevel: 'User'
+        // }
       ],
       accessibleBuildings: [
-        { buildingId: 1, buildingName: 'B1' }
+        // {
+        //   buildingId: 1,
+        //   buildingName: 'B1'
+        // }
       ],
 
       isEditUserDialogVisable: false,
@@ -255,19 +235,42 @@ export default {
     handleDataRowSelect (val) {
       this.currentUser = val
     },
-    editUser (index) {
+    onClickAddUser () {
+      this.editUserTitle = 'Add User'
+      this.isEditUserDialogVisable = true
+    },
+    onClickEditUser (index) {
       const levelMap = {
         'Super Admin': 1,
         'Admin': 2,
         'User': 3
       }
-      this.editUserTitle = 'Editing User: ' + this.userList[index].userName
+      this.editUserTitle = 'Edit User: ' + this.userList[index].userName
       this.userInfoForm.username = this.userList[index].userName
       this.userInfoForm.password = '********'
       this.userInfoForm.level = levelMap[this.userList[index].userLevel]
       this.isEditUserDialogVisable = true
     },
-    addBuilding () {
+    onClickConfirmEditUserDialog () {
+      // filter invalid input
+      if (this.editUserTitle === 'Add User') {
+        this.$http.put('/user', {
+          username: this.userInfoForm.username,
+          password: this.userInfoForm.password,
+          level: this.userInfoForm.level,
+          buildingList: []
+        })
+        .then((res) => {
+          console.log(res)
+          this.$notify({
+            title: 'Success',
+            message: 'Add User Success'
+          })
+          this.isEditUserDialogVisable = false
+        })
+      }
+    },
+    onClickAddBuilding () {
       if (this.currentUser === null) {
         this.$notify({
           title: 'Warning',

@@ -8,6 +8,7 @@
           :data="buildingList"
           highlight-current-row
           @current-change="handleBuildingSelect"
+          v-loading="isLoadingBuildings"
         >
           <el-table-column
             type="index"
@@ -26,30 +27,24 @@
     </div>
     <div id="choose-table-container">
       <div id="choose-table-title">Please Choose a Data Table:</div>
-      <div class="chooose-table-button-container">
-        <img
-          class="img-button"
-          src="../assets/icons/config.png"
-          @click="onClickMscopi('Mechanical Mystem Configurations')"
-        >
-        <span class="img-button-hint">MSC</span>
-      </div>
-      <div class="chooose-table-button-container">
-        <img
-          class="img-button"
-          src="../assets/icons/parameters.png"
-          @click="onClickMscopi('Optimizing Input Parameters', currentRow)"
-        >
-        <span class="img-button-hint">OPI</span>
-      </div>
-      <div class="chooose-table-button-container">
-        <img
-          class="img-button"
-          src="../assets/icons/status.png"
-          @click="onClickSos"
-        >
-        <span class="img-button-hint">SOS</span>
-      </div>
+      <el-button
+        class="choose-table-button"
+        @click="onClickMscopi('Mechanical System Configurations')"
+      >
+        MSC
+      </el-button>
+      <el-button
+        class="choose-table-button"
+        @click="onClickMscopi('Optimizing Input Parameters', currentRow)"
+      >
+        OPI
+      </el-button>
+      <el-button
+        class="choose-table-button"
+        @click="onClickSos"
+      >
+        SOS
+      </el-button>
     </div>
   </div>
 </template>
@@ -61,7 +56,8 @@ export default {
   name: 'home',
   data () {
     return {
-      currentRow: null
+      currentRow: null,
+      isLoadingBuildings: false
     }
   },
   computed: {
@@ -100,6 +96,21 @@ export default {
     }
   },
   created: function () {
+    this.isLoadingBuildings = true
+    this.$http.get('/buildings', {
+      auth: {
+        username: this.$store.state.userInfo.token,
+        password: 'unused'
+      }
+    })
+    .then(res => {
+      this.$store.commit('updateBuildingList', res.data.buildings)
+      this.isLoadingBuildings = false
+    })
+    .catch(err => {
+      console.log(err)
+      this.isLoadingBuildings = false
+    })
   }
 }
 </script>
@@ -111,13 +122,13 @@ export default {
   margin-left: 1vw;
   padding: 1vh 1vw;
   float: left;
-  width: 42vw;
+  width: 70vw;
   height: calc(97vh - 80px);
   background-color: white;
 }
 
 #table-container {
-  width: 42vw;
+  width: 70vw;
   height: calc(97vh - 120px);
   overflow: scroll;
 }
@@ -126,6 +137,7 @@ export default {
   margin-left: 15px;
   font-size: 24px;
   text-align: left;
+  margin-bottom: 3vh;
 }
 
 #choose-table-container {
@@ -133,30 +145,15 @@ export default {
   margin-left: 1vw;
   padding: 1vh 1vw;
   float: left;
-  width: 51vw;
+  width: 23vw;
   height: calc(97vh - 80px);
   background-color: white;
 }
 
-.img-button {
-  padding: 2vw;
-  height: 7vw;
-  width: 7vw;
-  border-radius: 20px;
-  background-color: whitesmoke;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-}
-
-.img-button:hover {
-  background-color: white;
-}
-
-.chooose-table-button-container {
-  margin: 20vh 2vw;
-  height: 13vw;
-  width: 13vw;
-  float: left;
+.choose-table-button {
+  width: 80%;
+  margin-top: 2vh;
+  margin-left: 0;
 }
 </style>
 

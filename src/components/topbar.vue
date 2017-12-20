@@ -1,26 +1,58 @@
 <template>
-<div id="topbar">
-  <header>
-    <img class="logo" src="../assets/logo.png" @click="onClickLogoOrTitle">
-    <span class="title" @click="onClickLogoOrTitle">RPI Online System</span>
-    <el-button class="topbar-button" type="text">Logout</el-button>
-    <el-button class="user-management topbar-button"
-      type="text"
-      @click="onClickManagement"
-      v-show="isAdmin">
-      management
-    </el-button>
-    <span class="user-name">Welcome, {{ userName }}</span>
-  </header>
-</div>
+  <div id="topbar">
+    <header>
+      <img
+        class="logo"
+        src="../assets/logo.png"
+        @click="onClickLogoOrTitle"
+      >
+      <span
+        class="title"
+        @click="onClickLogoOrTitle"
+      >
+        RPI Online System
+      </span>
+      <el-button
+        class="topbar-button"
+        type="text"
+        @click="onClickLogout"
+        v-if="isLogin"
+      >
+        Logout
+      </el-button>
+      <el-button
+        class="user-management topbar-button"
+        type="text"
+        @click="onClickManagement"
+        v-if="isAdmin && isLogin"
+      >
+        management
+      </el-button>
+      <span
+        class="user-name"
+        v-if="isLogin"
+      >
+        Welcome, {{ userName }}
+      </span>
+    </header>
+  </div>
 </template>
 
 <script>
 export default {
   data () {
     return {
-      userName: 'hhk',
-      isAdmin: true
+    }
+  },
+  computed: {
+    isAdmin () {
+      return this.$store.state.level === 1 || this.$store.state.level === 2
+    },
+    userName () {
+      return this.$store.state.userInfo.userName
+    },
+    isLogin () {
+      return this.$store.state.isLogin
     }
   },
   methods: {
@@ -29,6 +61,10 @@ export default {
     },
     onClickManagement () {
       this.$router.push('/management')
+    },
+    onClickLogout () {
+      this.$store.commit('logout')
+      this.$router.push('/login')
     }
   }
 }

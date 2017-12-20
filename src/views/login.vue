@@ -1,51 +1,50 @@
 <<template>
   <div id="login">
-    <top-bar></top-bar>
+    <top-bar/>
     <div id="login-form-container">
       <h1 id="login-title">Welcome</h1>
-      <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0px">
+      <el-form
+        :model="loginForm"
+        :rules="loginRules"
+        ref="loginForm"
+        label-width="0px"
+      >
         <div id="username-input">
-          <el-form-item label="" prop="usernameInput">
-            <el-input v-model="loginForm.usernameInput" @keyup.enter.native="login('loginForm')" size="large"
-                      placeholder="请输入用户名"></el-input>
+          <el-form-item prop="usernameInput">
+            <el-input
+              v-model="loginForm.usernameInput"
+              @keyup.enter.native="login('loginForm')"
+              size="large"
+              placeholder="请输入用户名"
+            />
           </el-form-item>
         </div>
         <div id="password-input">
-          <el-form-item label="" prop="passwordInput">
-            <el-input id="login-password-input" type="password" v-model="loginForm.passwordInput"
-                      @keyup.enter.native="login('loginForm')" size="large" placeholder="请输入密码">
-            </el-input>
+          <el-form-item prop="passwordInput">
+            <el-input
+              id="login-password-input"
+              type="password"
+              v-model="loginForm.passwordInput"
+              @keyup.enter.native="login('loginForm')"
+              size="large"
+              placeholder="请输入密码"
+            />
           </el-form-item>
         </div>
         <el-form-item>
           <div id="login-button">
-            <el-button id="login-login-btn" type="primary" @click="login('loginForm')">登录</el-button>
-            <el-button id="login-register-btn" @click="onRegister">注册</el-button>
+            <el-button
+              id="login-login-btn"
+              type="primary"
+              @click="login('loginForm')"
+              v-loading.fullscreen.lock="isLoading"
+            >
+              登录
+            </el-button>
           </div>
         </el-form-item>
       </el-form>
     </div>
-
-    <el-dialog title="新用户注册" :visible.syncdel="dialogVisible">
-      <div id="register-dialog">
-        <el-form :model="registerForm" :rules="registerRules" ref="register" label-width="100px">
-          <el-form-item label="用户名" prop="username">
-            <el-input class="register-input" v-model="registerForm.username"></el-input>
-          </el-form-item>
-          <el-form-item label="用户密码" prop="password">
-            <el-input type="password" class="register-input" v-model="registerForm.password"></el-input>
-          </el-form-item>
-          <el-form-item label="确认密码" prop="confirm">
-            <el-input type="password" class="register-input" v-model="registerForm.confirm"></el-input>
-          </el-form-item>
-        </el-form>
-        <span class="hint">*注册的用户只具有浏览权限，如需录入请与管理员联系</span>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addUser('registerForm')">注 册</el-button>
-        <el-button @click="dialogVisible = false">取 消</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -56,6 +55,7 @@ export default {
   name: 'login',
   data () {
     return {
+      isLoading: false,
       dialogVisible: false,
       //  login form & rules
       loginForm: {
@@ -69,48 +69,6 @@ export default {
         passwordInput: [
           { required: true, message: '请输入密码', trigger: 'blur' }
         ]
-      },
-      //  register form & rules
-      registerForm: {
-        userame: '',
-        password: '',
-        confirm: ''
-      },
-      registerRules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' }
-        ],
-        password: [
-          {
-            validator: (rule, value, callback) => {
-              if (value === '') {
-                callback(new Error('请输入密码'))
-              } else {
-                if (this.registerForm.confirm !== '') {
-                  this.$refs.register.validateField('confirm')
-                }
-                callback()
-              }
-            },
-            trigger: 'blur'
-          },
-          { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' }
-        ],
-        confirm: [
-          {
-            validator: (rule, value, callback) => {
-              if (value === '') {
-                callback(new Error('请再次输入密码'))
-              } else if (value !== this.registerForm.password) {
-                callback(new Error('两次输入密码不一致!'))
-              } else {
-                callback()
-              }
-            },
-            trigger: 'blur'
-          }
-        ]
       }
     }
   },
@@ -122,25 +80,50 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // TODO: send data to server to login
+          this.isLoading = true
+          this.$http.get('/login', {
+            auth: {
+              username: this.loginForm.usernameInput,
+              password: this.loginForm.passwordInput
+            }
+          })
+          .then(res => {
+            this.isLoading = false
+            this.$store.commit('updateUserInfo', {
+              userName: this.loginForm.usernameInput,
+              token: res.data.token
+            })
+            this.$store.commit('updateIsLogin', true)
+            this.$store.commit('updateLevel', res.data.role)
+            this.$router.push('/')
+            this.$notify({
+              title: 'Success',
+              message: 'Login Success'
+            })
+          })
+          .catch(err => {
+            console.log(err)
+            this.isLoading = false
+            this.$notify({
+              title: 'Fail',
+              message: 'Login Failed'
+            })
+          })
         } else {
           // data is invalid
           return false
         }
       })
-    },
-    onRegister () {
-      this.dialogVisible = true
-    },
-    addUser (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.dialogVisible = false
-          // TODO: send data to server to register
-        } else {
-          return false
-        }
-      })
     }
+  },
+  created () {
+    this.$http.get('/sos/csv', {})
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 }
 </script>

@@ -8,53 +8,41 @@ const debug = process.env.NODE_ENV !== 'production'
 export default new Vuex.Store({
   strict: debug,
   state: {
-    buildingList: [
-      {
-        id: 1,
-        name: 'B1'
-      }, {
-        id: 2,
-        name: 'B2'
-      }, {
-        id: 3,
-        name: 'B3'
-      }, {
-        id: 4,
-        name: 'B4'
-      }, {
-        id: 5,
-        name: 'B5'
-      }, {
-        id: 6,
-        name: 'B6'
-      }, {
-        id: 7,
-        name: 'B7'
-      }, {
-        id: 8,
-        name: 'B8'
-      }, {
-        id: 9,
-        name: 'B9'
-      }, {
-        id: 10,
-        name: 'B10'
-      }, {
-        id: 11,
-        name: 'B11'
-      }, {
-        id: 12,
-        name: 'B12'
-      }
-    ],
     userInfo: {
       userName: null,
       token: null
-    }
+    },
+    buildingList: [],
+    sosHeaders: {
+      temperature: ['t1', 't2', 't3', 't4'],
+      flow: ['f1', 'f2', 'f3', 'f4'],
+      pressure: ['p1', 'p2', 'p3', 'p4'],
+      current: ['c1', 'c2', 'c3', 'c4']
+    },
+    isLogin: true,
+    level: 1  // 'Super Admin': 1, 'Admin': 2, 'User': 3
   },
   mutations: {
     updateBuildingList: (state, newList) => {
       state.buildingList = newList
+    },
+    updateUserInfo: (state, newUserInfo) => {
+      state.userInfo = newUserInfo
+    },
+    updateIsLogin: (state, newIsLogin) => {
+      state.isLogin = newIsLogin
+    },
+    updateLevel: (state, newLevel) => {
+      state.level = newLevel
+    },
+    logout: (state) => {
+      state.buildingList = []
+      state.userInfo = {
+        userName: null,
+        token: null
+      }
+      state.isLogin = false
+      state.level = 0
     }
   }
 })

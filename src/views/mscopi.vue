@@ -54,7 +54,7 @@
         ref="mscForm"
         :model="mscForm"
         label-width="100px"
-        v-if="type === 'Mechanical Mystem Configurations'"
+        v-if="type === 'Mechanical System Configurations'"
       >
         <el-form-item
           class="form-item"
@@ -91,12 +91,11 @@
             :disabled="!isEditing"
           />
         </el-form-item>
-        </el-form-item>
         <el-form-item
           class="short-form-item"
           label="Starting Date">
           <el-input
-            v-model="mscForm.startingDate"
+            v-model="mscForm.dateStart"
             :disabled="!isEditing"
           />
         </el-form-item>
@@ -138,6 +137,7 @@
 
       <!-- Form of Optimizing Input Parameters -->
       <el-form
+        class="form"
         ref="opiForm"
         :model="opiForm"
         v-if="type === 'Optimizing Input Parameters'"
@@ -149,6 +149,93 @@
             :key="index"
             class="opi-data-array-input-item"
             :v-model="item"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+
+        <div class="opi-form-tag">Electricity Price</div>
+        <el-form-item>
+          <el-input
+            v-for="(item, index) in opiForm.electricityPrice"
+            :key="index"
+            class="opi-data-array-input-item"
+            :v-model="item"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+
+        <div class="opi-form-tag">Ambient Temperature</div>
+        <el-form-item>
+          <el-input
+            v-for="(item, index) in opiForm.ambientTemperature"
+            :key="index"
+            class="opi-data-array-input-item"
+            :v-model="item"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+
+        <div class="opi-form-tag">Solar Energy Output</div>
+        <el-form-item>
+          <el-input
+            v-for="(item, index) in opiForm.solarEnergyOutput"
+            :key="index"
+            class="opi-data-array-input-item"
+            :v-model="item"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+
+        <div class="opi-form-tag">Demand Response Scaler</div>
+        <el-form-item>
+          <el-input
+            v-for="(item, index) in opiForm.demandResponse"
+            :key="index"
+            class="opi-data-array-input-item"
+            :v-model="item"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+
+        <el-form-item
+          class="short-form-item"
+          label="Req for WP"
+          label-width="100px"
+        >
+          <el-switch
+            active-text=""
+            inactive-text=""
+            v-model="opiForm.isReqForWP"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+        <el-form-item
+          class="short-form-item"
+          label="Input Var1"
+          label-width="100px"
+        >
+          <el-input
+            v-model="opiForm.inputVar1"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+        <el-form-item
+          class="short-form-item"
+          label="Input Var2"
+          label-width="100px"
+        >
+          <el-input
+            v-model="opiForm.inputVar2"
+            :disabled="!isEditing"
+          />
+        </el-form-item>
+        <el-form-item
+          class="short-form-item"
+          label="Input Var3"
+          label-width="100px"
+        >
+          <el-input
+            v-model="opiForm.inputVar3"
             :disabled="!isEditing"
           />
         </el-form-item>
@@ -167,13 +254,13 @@ export default {
       type: '',
       isEditing: false,
       mscForm: {
-        buildingId: null,
+        id: null,
         buildingName: null,
         address: null,
         city: null,
         zipCode: null,
         isActive: null,
-        startingDate: null,
+        dateStart: null,
         waterHeaterBrand: null,
         waterHeaterCapacity: null,
         waterHeaterRatedEfficiency: null,
@@ -236,8 +323,40 @@ export default {
   },
   created: function () {
     this.type = this.$route.query.type
-    this.mscForm.buildingId = this.$route.query.id
+    this.mscForm.id = this.$route.query.id
     this.mscForm.buildingName = this.$route.query.name
+    // this.$http.get('/msc', {
+    //   params: {
+    //     id: this.mscForm.id
+    //   },
+    //   auth: {
+    //     username: this.$store.state.userInfo.token,
+    //     password: 'unused'
+    //   }
+    // })
+    // .then(res => {
+    //   console.log(res)
+    //   this.mscForm = res.data
+    // })
+    // .catch(err => {
+    //   console.log(err)
+    // })
+
+    this.$http.get('/opi', {
+      params: {
+        id: this.$route.query.id
+      },
+      auth: {
+        username: this.$store.state.userInfo.token,
+        password: 'unused'
+      }
+    })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 }
 </script>

@@ -4,13 +4,48 @@
     <div id="sos-control-bar">
       <div class="sos-control-bar-title">Building: {{ building }}</div>
       <div class="sos-control-bar-subtitle">{{ displayInfo }}</div>
-      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Photo'">Refresh</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Photo'">Export</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Photo'">Show Selected</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab !== 'Photo'">Show Photos</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab === 'Photo'">Take Photo</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab === 'Photo'">Download</el-button>
-      <el-button class="sos-control-bar-button" v-if="activeTab === 'Photo'">Delete</el-button>
+      <el-button
+        class="sos-control-bar-button"
+        v-if="activeTab !== 'Photo'"
+      >
+        Refresh
+      </el-button>
+      <el-button
+        class="sos-control-bar-button"
+        v-if="activeTab !== 'Photo'"
+      >
+        Export
+      </el-button>
+      <el-button
+        class="sos-control-bar-button"
+        v-if="activeTab !== 'Photo'"
+      >
+        Show Selected
+      </el-button>
+      <el-button
+        class="sos-control-bar-button"
+        v-if="activeTab !== 'Photo'"
+      >
+        Show Photos
+      </el-button>
+      <el-button
+        class="sos-control-bar-button"
+        v-if="activeTab === 'Photo'"
+      >
+        Take Photo
+      </el-button>
+      <el-button
+        class="sos-control-bar-button"
+        v-if="activeTab === 'Photo'"
+      >
+        Download
+      </el-button>
+      <el-button
+        class="sos-control-bar-button"
+        v-if="activeTab === 'Photo'"
+      >
+        Delete
+      </el-button>
     </div>
     <div id="tabs-container">
       <el-tabs v-model="activeTab" type="card" @tab-click="handleSwitch">

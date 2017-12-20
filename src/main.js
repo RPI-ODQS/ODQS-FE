@@ -20,7 +20,8 @@ Vue.use(ElementUI)
 Vue.use(VueAxios, axios)
 
 // axios settings
-Vue.axios.defaults.baseURL = 'https://www.easy-mock.com/mock/5a21751067862f4d0c0d582e/example'
+// use proxy instead
+Vue.axios.defaults.baseURL = '/api/'
 
 /* eslint-disable no-new */
 new Vue({

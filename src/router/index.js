@@ -8,14 +8,17 @@ import sos from '@/views/sos'
 import management from '@/views/management'
 import notfound from '@/views/notfound'
 
+import store from '../store/index'
+
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
       name: 'home',
+      meta: { requireAuth: true },
       component: home
     },
     {
@@ -26,16 +29,19 @@ export default new Router({
     {
       path: '/mscopi',
       name: 'mscopi',
+      meta: { requireAuth: true },
       component: mscopi
     },
     {
       path: '/sos',
       name: 'sos',
+      meta: { requireAuth: true },
       component: sos
     },
     {
       path: '/management',
       name: 'management',
+      meta: { requireAuth: true },
       component: management
     },
     {
@@ -44,3 +50,21 @@ export default new Router({
     }
   ]
 })
+
+// add hooks
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {    // 判断该路由是否需要登录权限
+    if (store.state.isLogin) {  // 通过vuex state获取当前的token是否存在
+      next()
+    } else {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+      })
+    }
+  } else {
+    next()
+  }
+})
+
+export default router

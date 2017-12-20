@@ -64,7 +64,7 @@ export default {
   methods: {
     onSelectMultipleImage (data) {
       this.imageMultipleSelected = data
-      console.log(this.imageMultipleSelected)
+      // console.log(this.imageMultipleSelected)
     }
   }
 }
