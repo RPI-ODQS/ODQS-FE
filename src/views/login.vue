@@ -117,13 +117,13 @@ export default {
     }
   },
   created () {
-    this.$http.get('/sos/csv', {})
-    .then(res => {
-      console.log(res)
-    })
-    .catch(err => {
-      console.log(err)
-    })
+    // this.$http.get('/sos/csv', {})
+    // .then(res => {
+    //   console.log(res)
+    // })
+    // .catch(err => {
+    //   console.log(err)
+    // })
   }
 }
 </script>

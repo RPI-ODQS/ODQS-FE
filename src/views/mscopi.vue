@@ -55,6 +55,7 @@
         :model="mscForm"
         label-width="100px"
         v-if="type === 'Mechanical System Configurations'"
+        v-loading="isLoadingMscForm"
       >
         <el-form-item
           class="form-item"
@@ -141,6 +142,7 @@
         ref="opiForm"
         :model="opiForm"
         v-if="type === 'Optimizing Input Parameters'"
+        v-loading="isLoadingMscForm"
       >
         <div class="opi-form-tag">System Demand</div>
         <el-form-item>
@@ -152,7 +154,6 @@
             :disabled="!isEditing"
           />
         </el-form-item>
-
         <div class="opi-form-tag">Electricity Price</div>
         <el-form-item>
           <el-input
@@ -163,7 +164,6 @@
             :disabled="!isEditing"
           />
         </el-form-item>
-
         <div class="opi-form-tag">Ambient Temperature</div>
         <el-form-item>
           <el-input
@@ -174,7 +174,6 @@
             :disabled="!isEditing"
           />
         </el-form-item>
-
         <div class="opi-form-tag">Solar Energy Output</div>
         <el-form-item>
           <el-input
@@ -185,7 +184,6 @@
             :disabled="!isEditing"
           />
         </el-form-item>
-
         <div class="opi-form-tag">Demand Response Scaler</div>
         <el-form-item>
           <el-input
@@ -196,7 +194,6 @@
             :disabled="!isEditing"
           />
         </el-form-item>
-
         <el-form-item
           class="short-form-item"
           label="Req for WP"
@@ -253,6 +250,8 @@ export default {
     return {
       type: '',
       isEditing: false,
+      isLoadingMscForm: false,
+      isLoadingOpiForm: false,
       mscForm: {
         id: null,
         buildingName: null,
@@ -317,46 +316,78 @@ export default {
     onClickSave () {
       // TODO: send data to BE
       this.isEditing = false
+      if (this.type === 'Mechanical System Configurations') {
+
+      } else {
+        this.isLoadingOpiForm = true
+        this.$http.post('/update/opi', this.opiForm, {
+          auth: {
+            username: this.$store.state.userInfo.token,
+            password: 'unused'
+          }
+        })
+        .then(res => {
+          this.isLoadingOpiForm = false
+        })
+        .catch(err => {
+          console.log(err)
+          this.isLoadingOpiForm = false
+        })
+      }
     },
-    onClickRefresh () {},
-    onClickExport () {}
+    onClickRefresh () {
+      this.refreshData()
+    },
+    onClickExport () {},
+    refreshData () {
+      if (this.type === 'Mechanical System Configurations') {
+        this.isLoadingMscForm = true
+        this.$http.get('/msc', {
+          params: {
+            id: this.mscForm.id
+          },
+          auth: {
+            username: this.$store.state.userInfo.token,
+            password: 'unused'
+          }
+        })
+        .then(res => {
+          this.mscForm = res.data
+          this.isLoadingMscForm = false
+        })
+        .catch(err => {
+          console.log(err)
+          this.isLoadingMscForm = false
+        })
+      } else {
+        this.isLoadingOpiForm = true
+        this.$http.get('/opi', {
+          params: {
+            id: this.$route.query.id
+          },
+          auth: {
+            username: this.$store.state.userInfo.token,
+            password: 'unused'
+          }
+        })
+        .then(res => {
+          console.log(res)
+          // this.opiForm = res.data
+          this.isLoadingOpiForm = false
+        })
+        .catch(err => {
+          console.log(err)
+          this.isLoadingOpiForm = false
+        })
+      }
+    }
   },
   created: function () {
     this.type = this.$route.query.type
     this.mscForm.id = this.$route.query.id
     this.mscForm.buildingName = this.$route.query.name
-    // this.$http.get('/msc', {
-    //   params: {
-    //     id: this.mscForm.id
-    //   },
-    //   auth: {
-    //     username: this.$store.state.userInfo.token,
-    //     password: 'unused'
-    //   }
-    // })
-    // .then(res => {
-    //   console.log(res)
-    //   this.mscForm = res.data
-    // })
-    // .catch(err => {
-    //   console.log(err)
-    // })
 
-    this.$http.get('/opi', {
-      params: {
-        id: this.$route.query.id
-      },
-      auth: {
-        username: this.$store.state.userInfo.token,
-        password: 'unused'
-      }
-    })
-    .then(res => {
-      console.log(res)
-    })
-    .catch(err => {
-      console.log(err)
-    })
+    this.refreshData()
   }
 }
 </script>

@@ -13,6 +13,7 @@
       <el-button
         class="sos-control-bar-button"
         v-if="activeTab !== 'Photo'"
+        @click="onClickExport"
       >
         Export
       </el-button>
@@ -48,9 +49,13 @@
       </el-button>
     </div>
     <div id="tabs-container">
-      <el-tabs v-model="activeTab" type="card" @tab-click="handleSwitch">
+      <el-tabs
+        v-model="activeTab"
+        type="card"
+        @tab-click="handleSwitch"
+      >
         <el-tab-pane label="SOS Data List" name="DataList">
-          <sos-data-list/>
+          <sos-data-list ref="sdl"/>
         </el-tab-pane>
         <el-tab-pane label="SOS Photo" name="Photo">
           <sos-photo/>
@@ -70,7 +75,8 @@ export default {
   data () {
     return {
       activeTab: 'DataList',  // 'DataList' or 'Photo'
-      building: 'B1',
+      building: null,
+      buildingId: null,
       displayInfo: 'System Operation Status'
     }
   },
@@ -86,10 +92,14 @@ export default {
       } else {
         this.displayInfo = 'Web Camera'
       }
+    },
+    onClickExport () {
+      this.$refs.sdl.export()
     }
   },
   created: function () {
     this.building = this.$route.query.building
+    this.buildingId = this.$route.query.buildingId
   }
 }
 </script>

@@ -11,8 +11,9 @@
           v-loading="isLoadingBuildings"
         >
           <el-table-column
-            type="index"
-            width="50"
+            prop="id"
+            label="Building Id"
+            width="120"
             align="center"
             header-align="center"
           />
@@ -91,7 +92,7 @@ export default {
           message: 'Please Choose a Building First'
         })
       } else {
-        this.$router.push(`/sos?building=${this.currentRow.name}`)
+        this.$router.push(`/sos?buildingId=${this.currentRow.id}&building=${this.currentRow.name}`)
       }
     }
   },

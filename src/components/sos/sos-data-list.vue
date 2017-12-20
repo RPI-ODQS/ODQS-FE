@@ -2,10 +2,12 @@
   <div class="sos-data-list">
     <div class="sos-data-list-title">Select Data Field:</div>
     <el-form id="sos-data-select-form"
-          ref="selectedForm"
-          :model="selectedForm"
-          label-position="left"
-          label-width="100px">
+      ref="selectedForm"
+      :model="selectedForm"
+      label-position="left"
+      label-width="100px"
+      v-loading="isLoadingHeader"
+    >
       <el-form-item class="sos-data-form-item" label="Temperature">
         <el-checkbox-group v-model="selectedForm.temperature">
           <el-checkbox label="Temperature 1" name="temperature"></el-checkbox>
@@ -64,6 +66,7 @@ export default {
   name: 'sos-data-list',
   data () {
     return {
+      isLoadingHeader: false,
       selectedForm: {
         temperature: [],
         flow: [],
@@ -71,7 +74,8 @@ export default {
         current: [],
         timeRange: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       },
-      buildingName: 'B1',
+      buildingName: null,
+      buildingId: null,
       temperatureChartData: {
         labels: [
           'January', 'February', 'March', 'April',
@@ -120,6 +124,72 @@ export default {
   },
   components: {
     LineChart
+  },
+  methods: {
+    export () {
+      console.log('export')
+      this.$http.get('/sos/csv', {
+        auth: {
+          username: this.$store.state.userInfo.token,
+          password: 'unused'
+        },
+        params: {
+          buildingId: 1,
+          sensorsIds: {
+            temperature: ['temperature 1'],
+            flow: [],
+            pressure: [],
+            current: []
+          },
+          timeFrom: '2017-10-10 1',
+          timeTo: '2017-10-11 11'
+        }
+      })
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
+    getSosHeader () {
+      // this.isLoadingHeader = true
+      // this.$http.get('/sos/header', {
+      //   params: {
+      //     buildingId: this.buildingId
+      //   }
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //   this.isLoadingHeader = false
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      //   this.isLoadingHeader = false
+      // })
+    },
+    onClickSearch () {
+      // this.$http.get('/sos/data', {
+      //   params: {
+      //     buildingId: 1,
+      //     timeFrom: '2017-12-20 10',
+      //     timeTo: '2017-12-20 11'
+      //   }
+      // })
+      // .then(res => {
+      //   console.log(res)
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
+    }
+  },
+  created: function () {
+    this.building = this.$route.query.building
+    this.buildingId = this.$route.query.buildingId
+
+    this.getSosHeader()
+    this.export()
   }
 }
 </script>

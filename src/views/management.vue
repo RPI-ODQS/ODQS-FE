@@ -19,6 +19,7 @@
           :data="userList"
           highlight-current-row
           @current-change="handleDataRowSelect"
+          v-loading="isLoadingUsers"
         >
           <el-table-column
             type="selection"
@@ -198,6 +199,7 @@ export default {
   data () {
     return {
       type: 'User Management Data',
+      isLoadingUsers: false,
       currentUser: null,
       userList: [
         // {
@@ -280,7 +282,30 @@ export default {
         this.editBuildingTitle = 'Add Building for ' + this.currentUser.userName
         this.isEditBuildingDialogVisable = true
       }
+    },
+    getAllUsers () {
+      this.isLoadingUsers = true
+      this.$http.get('/user', {
+        auth: {
+          username: this.$store.state.userInfo.token,
+          password: 'unused'
+        },
+        params: {
+          conditions: null
+        }
+      })
+      .then(res => {
+        console.log(res)
+        this.isLoadingUsers = false
+      })
+      .catch(err => {
+        console.log(err)
+        this.isLoadingUsers = false
+      })
     }
+  },
+  created: function () {
+    this.getAllUsers()
   }
 }
 </script>
