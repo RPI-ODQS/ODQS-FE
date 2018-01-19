@@ -17,18 +17,9 @@
       >
         {{ type }}
       </div>
-
-      <el-button
-        class="mscopi-button"
-        @click="onClickEdit"
-        v-if="!isEditing"
-      >
-        Edit
-      </el-button>
       <el-button
         class="mscopi-button"
         @click="onClickSave"
-        v-if="isEditing"
       >
         Save
       </el-button>
@@ -47,7 +38,10 @@
     </div>
 
     <!-- Right Part: Data Field -->
-    <div id="data-field-container">
+    <div
+      id="data-field-container"
+      v-loading="isLoadingForm"
+    >
       <!-- Form of Mechanical Mystem Configurations -->
       <el-form
         class="form"
@@ -55,7 +49,6 @@
         :model="mscForm"
         label-width="100px"
         v-if="type === 'Mechanical System Configurations'"
-        v-loading="isLoadingMscForm"
       >
         <el-form-item
           class="form-item"
@@ -136,107 +129,29 @@
         </el-form-item>
       </el-form>
 
+      <v-table
+        class="opi-table1"
+        is-horizontal-resize
+        style="width:100%"
+        row-hover-color="#eee"
+        row-click-color="#edf7ff"
+        :columns="opiColumns1"
+        :table-data="opiTableData1"
+        :cell-edit-done="opiCellEditDone1"
+      />
+
       <!-- Form of Optimizing Input Parameters -->
-      <el-form
-        class="form"
-        ref="opiForm"
-        :model="opiForm"
+      <v-table
+        is-horizontal-resize
+        style="width:100%"
+        row-hover-color="#eee"
+        row-click-color="#edf7ff"
+        :columns="opiColumns"
+        :table-data="opiTableData"
+        :cell-edit-done="opiCellEditDone"
         v-if="type === 'Optimizing Input Parameters'"
-        v-loading="isLoadingMscForm"
-      >
-        <div class="opi-form-tag">System Demand</div>
-        <el-form-item>
-          <el-input
-            v-for="(item, index) in opiForm.systemDemand"
-            :key="index"
-            class="opi-data-array-input-item"
-            :v-model="item"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-        <div class="opi-form-tag">Electricity Price</div>
-        <el-form-item>
-          <el-input
-            v-for="(item, index) in opiForm.electricityPrice"
-            :key="index"
-            class="opi-data-array-input-item"
-            :v-model="item"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-        <div class="opi-form-tag">Ambient Temperature</div>
-        <el-form-item>
-          <el-input
-            v-for="(item, index) in opiForm.ambientTemperature"
-            :key="index"
-            class="opi-data-array-input-item"
-            :v-model="item"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-        <div class="opi-form-tag">Solar Energy Output</div>
-        <el-form-item>
-          <el-input
-            v-for="(item, index) in opiForm.solarEnergyOutput"
-            :key="index"
-            class="opi-data-array-input-item"
-            :v-model="item"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-        <div class="opi-form-tag">Demand Response Scaler</div>
-        <el-form-item>
-          <el-input
-            v-for="(item, index) in opiForm.demandResponse"
-            :key="index"
-            class="opi-data-array-input-item"
-            :v-model="item"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-        <el-form-item
-          class="short-form-item"
-          label="Req for WP"
-          label-width="100px"
-        >
-          <el-switch
-            active-text=""
-            inactive-text=""
-            v-model="opiForm.isReqForWP"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-        <el-form-item
-          class="short-form-item"
-          label="Input Var1"
-          label-width="100px"
-        >
-          <el-input
-            v-model="opiForm.inputVar1"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-        <el-form-item
-          class="short-form-item"
-          label="Input Var2"
-          label-width="100px"
-        >
-          <el-input
-            v-model="opiForm.inputVar2"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-        <el-form-item
-          class="short-form-item"
-          label="Input Var3"
-          label-width="100px"
-        >
-          <el-input
-            v-model="opiForm.inputVar3"
-            :disabled="!isEditing"
-          />
-        </el-form-item>
-      </el-form>
+      />
+
     </div>
   </div>
 </template>
@@ -250,8 +165,7 @@ export default {
     return {
       type: '',
       isEditing: false,
-      isLoadingMscForm: false,
-      isLoadingOpiForm: false,
+      isLoadingForm: false,
       mscForm: {
         id: null,
         buildingName: null,
@@ -265,6 +179,91 @@ export default {
         waterHeaterRatedEfficiency: null,
         storageCapacity: null
       },
+      opiColumns: [
+        {
+          field: 'hour',
+          title: 'Hour',
+          width: 30,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isResize: true
+        }, {
+          field: 'hotWaterDemand',
+          title: 'Hot Water Demand',
+          width: 130,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isEdit: true,
+          isResize: true
+        }, {
+          field: 'electricityPrice',
+          title: 'Electricity Price',
+          width: 130,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isEdit: true,
+          isResize: true
+        }, {
+          field: 'ambientTemperature',
+          title: 'Ambient Temperature',
+          width: 130,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isEdit: true,
+          isResize: true
+        }, {
+          field: 'demandResponse',
+          title: 'Demand Response',
+          width: 130,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isEdit: true,
+          isResize: true
+        }, {
+          field: 'solarGeneration',
+          title: 'Solar Generation',
+          width: 130,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isEdit: true,
+          isResize: true
+        }
+      ],
+      opiTableData: [],
+      opiColumns1: [
+        {
+          field: 'optimizationType',
+          title: 'Optimization Type',
+          width: 150,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isEdit: true,
+          isResize: true
+        }, {
+          field: 'parameter1',
+          title: 'parameter 1',
+          width: 150,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isEdit: true,
+          isResize: true
+        }, {
+          field: 'parameter2',
+          title: 'Parameter 2',
+          width: 150,
+          titleAlign: 'center',
+          columnAlign: 'center',
+          isEdit: true,
+          isResize: true
+        }
+      ],
+      opiTableData1: [
+        {
+          optimizationType: '',
+          parameter1: '',
+          parameter2: ''
+        }
+      ],
       opiForm: {
         systemDemand: [
           null, null, null, null, null, null,
@@ -310,16 +309,12 @@ export default {
     handleDataRowSelect (val) {
       this.mscForm.buildingName = val
     },
-    onClickEdit () {
-      this.isEditing = true
-    },
     onClickSave () {
       // TODO: send data to BE
-      this.isEditing = false
       if (this.type === 'Mechanical System Configurations') {
 
       } else {
-        this.isLoadingOpiForm = true
+        this.isLoadingForm = true
         this.$http.post('/update/opi', this.opiForm, {
           auth: {
             username: this.$store.state.userInfo.token,
@@ -327,11 +322,11 @@ export default {
           }
         })
         .then(res => {
-          this.isLoadingOpiForm = false
+          this.isLoadingForm = false
         })
         .catch(err => {
           console.log(err)
-          this.isLoadingOpiForm = false
+          this.isLoadingForm = false
         })
       }
     },
@@ -341,7 +336,7 @@ export default {
     onClickExport () {},
     refreshData () {
       if (this.type === 'Mechanical System Configurations') {
-        this.isLoadingMscForm = true
+        this.isLoadingForm = true
         this.$http.get('/msc', {
           params: {
             id: this.mscForm.id
@@ -353,14 +348,14 @@ export default {
         })
         .then(res => {
           this.mscForm = res.data
-          this.isLoadingMscForm = false
+          this.isLoadingForm = false
         })
         .catch(err => {
           console.log(err)
-          this.isLoadingMscForm = false
+          this.isLoadingForm = false
         })
       } else {
-        this.isLoadingOpiForm = true
+        this.isLoadingForm = true
         this.$http.get('/opi', {
           params: {
             id: this.$route.query.id
@@ -373,11 +368,30 @@ export default {
         .then(res => {
           console.log(res)
           // this.opiForm = res.data
-          this.isLoadingOpiForm = false
+          this.isLoadingForm = false
         })
         .catch(err => {
           console.log(err)
-          this.isLoadingOpiForm = false
+          this.isLoadingForm = false
+        })
+      }
+    },
+    // callback
+    opiCellEditDone (newValue, oldValue, rowIndex, rowData, field) {
+      this.opiTableData[rowIndex][field] = newValue
+    },
+    opiCellEditDone1 (newValue, oldValue, rowIndex, rowData, field) {
+      this.opiTableData1[rowIndex][field] = newValue
+    },
+    generateDefaultOpiData () {
+      for (let i = 1; i <= 24; ++i) {
+        this.opiTableData.push({
+          hour: i,
+          hotWaterDemand: '',
+          electricityPrice: '',
+          ambientTemperature: '',
+          demandResponse: '',
+          solarGeneration: ''
         })
       }
     }
@@ -387,6 +401,7 @@ export default {
     this.mscForm.id = this.$route.query.id
     this.mscForm.buildingName = this.$route.query.name
 
+    this.generateDefaultOpiData()
     this.refreshData()
   }
 }
@@ -398,15 +413,15 @@ export default {
   margin-left: 1vw;
   padding: 1vh 1vw;
   float: left;
-  width: 70vw;
-  height: calc(96vh - 80px);
+  width: 72vw;
+  height: calc(98vh - 80px);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   overflow: scroll;
 }
 
 .data-table-container {
-  height: calc(96vh - 110px);
+  height: calc(98vh - 110px);
   overflow: scroll;
 }
 
@@ -415,8 +430,8 @@ export default {
   margin-left: 1vw;
   padding: 1vh 1vw;
   float: left;
-  width: 23vw;
-  height: calc(96vh - 80px);
+  width: 25vw;
+  height: calc(98vh - 80px);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
@@ -462,5 +477,9 @@ export default {
   float: left;
   margin-right: 1%;
   margin-bottom:5px;
+}
+
+.opi-table1 {
+  margin-bottom: 2vh;
 }
 </style>

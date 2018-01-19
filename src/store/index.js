@@ -9,7 +9,7 @@ export default new Vuex.Store({
   strict: debug,
   state: {
     userInfo: {
-      userName: null,
+      userName: 'admin',
       token: null
     },
     buildingList: [],
@@ -19,8 +19,8 @@ export default new Vuex.Store({
       pressure: ['p1', 'p2', 'p3', 'p4'],
       current: ['c1', 'c2', 'c3', 'c4']
     },
-    isLogin: false,
-    level: 0  // 'Super Admin': 1, 'Admin': 2, 'User': 3
+    isLogin: true,
+    level: 1  // 'Super Admin': 1, 'Admin': 2, 'User': 3
   },
   mutations: {
     updateBuildingList: (state, newList) => {

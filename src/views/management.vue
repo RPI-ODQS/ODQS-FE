@@ -309,7 +309,6 @@ export default {
     },
     onClickDelete () {
       if (this.currentSelectedUsers.length > 0) {
-        // console.log(this.currentSelectedUsers[0].userId)
         this.$http.delete('/user', {
           auth: {
             username: this.$store.state.userInfo.token,
@@ -373,8 +372,8 @@ export default {
   margin-left: 1vw;
   padding: 1vh 1vw;
   float: left;
-  width: 53vw;
-  height: calc(97vh - 80px);
+  width: 55vw;
+  height: calc(99vh - 80px);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
@@ -384,8 +383,8 @@ export default {
   margin-left: 1vw;
   padding: 1vh 1vw;
   float: left;
-  width: 40vw;
-  height: calc(97vh - 80px);
+  width: 42vw;
+  height: calc(99vh - 80px);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }

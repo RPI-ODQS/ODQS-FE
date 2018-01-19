@@ -20,14 +20,9 @@
       <el-button
         class="sos-control-bar-button"
         v-if="activeTab !== 'Photo'"
+        @click="onClickUpload"
       >
-        Show Selected
-      </el-button>
-      <el-button
-        class="sos-control-bar-button"
-        v-if="activeTab !== 'Photo'"
-      >
-        Show Photos
+        Upload
       </el-button>
       <el-button
         class="sos-control-bar-button"
@@ -62,6 +57,22 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+
+    <el-dialog
+      title="Upload"
+      :visible.sync="uploadDialogVisible"
+      width="40%"
+    >
+      <el-upload
+        drag
+        action="https://jsonplaceholder.typicode.com/posts/"
+        multiple
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">Drag your file here，or <em>click to upload</em></div>
+        <div class="el-upload__tip" slot="tip">Upload SOS CSV</div>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -77,7 +88,8 @@ export default {
       activeTab: 'DataList',  // 'DataList' or 'Photo'
       building: null,
       buildingId: null,
-      displayInfo: 'System Operation Status'
+      displayInfo: 'System Operation Status',
+      uploadDialogVisible: false
     }
   },
   components: {
@@ -95,6 +107,9 @@ export default {
     },
     onClickExport () {
       this.$refs.sdl.export()
+    },
+    onClickUpload () {
+      this.uploadDialogVisible = true
     }
   },
   created: function () {
@@ -110,8 +125,8 @@ export default {
   margin-top: 2vh;
   margin-left: 1vw;
   padding: 1vh 1vw;
-  height: calc(96vh - 80px);
-  width: 70vw;
+  height: calc(98vh - 80px);
+  width: 72vw;
   background-color: white;
   overflow: scroll;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -122,8 +137,8 @@ export default {
   margin-top: 2vh;
   margin-left: 1vw;
   padding: 1vh 1vw;
-  width: 23vw;
-  height: calc(96vh - 80px);
+  width: 25vw;
+  height: calc(98vh - 80px);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   overflow: scroll;

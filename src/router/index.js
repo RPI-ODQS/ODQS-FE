@@ -5,6 +5,7 @@ import home from '@/views/home'
 import login from '@/views/login'
 import mscopi from '@/views/mscopi'
 import sos from '@/views/sos'
+import com from '@/views/com'
 import management from '@/views/management'
 import notfound from '@/views/notfound'
 
@@ -37,6 +38,12 @@ const router = new Router({
       name: 'sos',
       meta: { requireAuth: true },
       component: sos
+    },
+    {
+      path: '/com',
+      name: 'com',
+      meta: { requireAuth: true },
+      component: com
     },
     {
       path: '/management',

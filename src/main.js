@@ -3,7 +3,10 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import 'vue-easytable/libs/themes-base/index.css'
 import App from './App'
+
+import { VTable } from 'vue-easytable'
 
 // http
 import axios from 'axios'
@@ -19,10 +22,12 @@ Vue.use(ElementUI)
 // http req
 Vue.use(VueAxios, axios)
 
+Vue.component(VTable.name, VTable)
+
 // axios settings
 // use proxy instead
 // Vue.axios.defaults.baseURL = '/api/'
-Vue.axios.defaults.baseURL = 'http://192.168.31.224:5000/'
+Vue.axios.defaults.baseURL = 'http://172.18.70.214'
 
 /* eslint-disable no-new */
 new Vue({

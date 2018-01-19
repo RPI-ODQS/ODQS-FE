@@ -77,7 +77,7 @@ export default {
 }
 </style>
 
-<<style>
+<style>
 .VueSelectImage__img {
   width: 230px;
   height: 230px;

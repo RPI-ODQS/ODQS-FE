@@ -46,6 +46,12 @@
       >
         SOS
       </el-button>
+      <el-button
+        class="choose-table-button"
+        @click="onClickCom"
+      >
+        COM
+      </el-button>
     </div>
   </div>
 </template>
@@ -94,6 +100,17 @@ export default {
       } else {
         this.$router.push(`/sos?buildingId=${this.currentRow.id}&building=${this.currentRow.name}`)
       }
+    },
+    onClickCom () {
+      if (this.currentRow === null) {
+        // TODD: Error
+        this.$notify({
+          title: 'Debug Message',
+          message: 'Please Choose a Building First'
+        })
+      } else {
+        this.$router.push(`/com?buildingId=${this.currentRow.id}&building=${this.currentRow.name}`)
+      }
     }
   },
   created: function () {
@@ -112,30 +129,6 @@ export default {
       console.log(err)
       this.isLoadingBuildings = false
     })
-
-    // this.$http.get('/sos/csv', {
-    //   auth: {
-    //     username: this.$store.state.userInfo.token,
-    //     password: 'unused'
-    //   },
-    //   params: {
-    //     buildingId: 1,
-    //     sensorsIds: {
-    //       temperature: ['Temperature 1'],
-    //       flow: [],
-    //       pressure: [],
-    //       current: []
-    //     },
-    //     timeFrom: '2017-10-10 1',
-    //     timeTo: '2017-10-11 11'
-    //   }
-    // })
-    // .then(res => {
-    //   console.log(res)
-    // })
-    // .catch(err => {
-    //   console.log(err)
-    // })
   }
 }
 </script>
@@ -147,14 +140,14 @@ export default {
   margin-left: 1vw;
   padding: 1vh 1vw;
   float: left;
-  width: 70vw;
-  height: calc(97vh - 80px);
+  width: 72vw;
+  height: calc(99vh - 80px);
   background-color: white;
 }
 
 #table-container {
   width: 70vw;
-  height: calc(97vh - 120px);
+  height: calc(99vh - 130px);
   overflow: scroll;
 }
 
@@ -170,8 +163,8 @@ export default {
   margin-left: 1vw;
   padding: 1vh 1vw;
   float: left;
-  width: 23vw;
-  height: calc(97vh - 80px);
+  width: 25vw;
+  height: calc(99vh - 80px);
   background-color: white;
 }
 
