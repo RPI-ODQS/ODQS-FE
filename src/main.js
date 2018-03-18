@@ -26,8 +26,7 @@ Vue.component(VTable.name, VTable)
 
 // axios settings
 // use proxy instead
-// Vue.axios.defaults.baseURL = '/api/'
-Vue.axios.defaults.baseURL = 'http://172.18.70.214'
+Vue.axios.defaults.baseURL = 'http://120.79.195.55:5000/'
 
 /* eslint-disable no-new */
 new Vue({

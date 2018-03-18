@@ -25,4 +25,16 @@ body {
   padding: 0;
   margin: 0;
 }
+
+/* override vue-easytable */
+.table-title {
+  font-weight: bold;
+  word-break: keep-all !important;
+  display: inline-block;
+  padding: 0 3px;
+  vertical-align: middle;
+  word-break: break-all;
+  overflow: hidden;
+  line-height: 1.2em;
+}
 </style>

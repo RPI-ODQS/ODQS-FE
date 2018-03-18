@@ -2,7 +2,7 @@
   <div class="sos">
     <top-bar></top-bar>
     <div id="sos-control-bar">
-      <div class="sos-control-bar-title">Building: {{ building }}</div>
+      <div class="sos-control-bar-title">Building: {{ buildingName }}</div>
       <div class="sos-control-bar-subtitle">{{ displayInfo }}</div>
       <el-button
         class="sos-control-bar-button"
@@ -58,14 +58,15 @@
       </el-tabs>
     </div>
 
+    <!-- upload dialog -->
     <el-dialog
       title="Upload"
       :visible.sync="uploadDialogVisible"
-      width="40%"
+      width="60%"
     >
       <el-upload
         drag
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action="/sos/update"
         multiple
       >
         <i class="el-icon-upload"></i>
@@ -86,7 +87,7 @@ export default {
   data () {
     return {
       activeTab: 'DataList',  // 'DataList' or 'Photo'
-      building: null,
+      buildingName: null,
       buildingId: null,
       displayInfo: 'System Operation Status',
       uploadDialogVisible: false
@@ -113,8 +114,8 @@ export default {
     }
   },
   created: function () {
-    this.building = this.$route.query.building
-    this.buildingId = this.$route.query.buildingId
+    this.buildingName = this.$route.query.name
+    this.buildingId = this.$route.query.id
   }
 }
 </script>

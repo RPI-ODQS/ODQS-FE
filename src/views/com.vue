@@ -2,7 +2,7 @@
   <div class="com">
     <top-bar></top-bar>
     <div id="com-control-bar">
-      <div class="com-control-bar-title">Building: {{ building }}</div>
+      <div class="com-control-bar-title">Building: {{ buildingName }}</div>
       <div class="com-control-bar-subtitle">{{ displayInfo }}</div>
       <el-button
         class="com-button"
@@ -39,7 +39,7 @@ export default {
   name: 'com',
   data () {
     return {
-      building: null,
+      buildingName: null,
       displayInfo: null,
       comColumns: [
         {
@@ -127,6 +127,9 @@ export default {
         status: ''
       })
     }
+  },
+  created () {
+    this.buildingName = this.$route.query.name
   }
 }
 </script>

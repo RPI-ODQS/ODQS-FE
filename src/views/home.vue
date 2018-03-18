@@ -30,27 +30,11 @@
       <div id="choose-table-title">Please Choose a Data Table:</div>
       <el-button
         class="choose-table-button"
-        @click="onClickMscopi('Mechanical System Configurations')"
+        v-for="(item, index) in ['MSC', 'OPI', 'SOS', 'COM']"
+        :key="index"
+        @click="onClickDetailData(index)"
       >
-        MSC
-      </el-button>
-      <el-button
-        class="choose-table-button"
-        @click="onClickMscopi('Optimizing Input Parameters', currentRow)"
-      >
-        OPI
-      </el-button>
-      <el-button
-        class="choose-table-button"
-        @click="onClickSos"
-      >
-        SOS
-      </el-button>
-      <el-button
-        class="choose-table-button"
-        @click="onClickCom"
-      >
-        COM
+        {{ item }}
       </el-button>
     </div>
   </div>
@@ -79,37 +63,26 @@ export default {
     handleBuildingSelect (val) {
       this.currentRow = val
     },
-    onClickMscopi (type) {
+    onClickDetailData (typeId) {
+      let typeIdMap = [
+        'Mechanical System Configurations',
+        'Optimizing Input Parameters',
+        'System Operation Status',
+        'Command Operation Methods'
+      ]
+      let typeFunctions = [
+        () => { this.$router.push(`/mscopi?type=${typeIdMap[typeId]}&id=${this.currentRow.id}&name=${this.currentRow.name}`) },
+        () => { this.$router.push(`/mscopi?type=${typeIdMap[typeId]}&id=${this.currentRow.id}&name=${this.currentRow.name}`) },
+        () => { this.$router.push(`/sos?id=${this.currentRow.id}&name=${this.currentRow.name}`) },
+        () => { this.$router.push(`/com?id=${this.currentRow.id}&name=${this.currentRow.name}`) }
+      ]
       if (this.currentRow === null) {
-        // TODD: Error
         this.$notify({
-          title: 'Debug Message',
+          title: 'Warning',
           message: 'Please Choose a Building First'
         })
       } else {
-        this.$router.push(`/mscopi?type=${type}&id=${this.currentRow.id}&name=${this.currentRow.name}`)
-      }
-    },
-    onClickSos () {
-      if (this.currentRow === null) {
-        // TODD: Error
-        this.$notify({
-          title: 'Debug Message',
-          message: 'Please Choose a Building First'
-        })
-      } else {
-        this.$router.push(`/sos?buildingId=${this.currentRow.id}&building=${this.currentRow.name}`)
-      }
-    },
-    onClickCom () {
-      if (this.currentRow === null) {
-        // TODD: Error
-        this.$notify({
-          title: 'Debug Message',
-          message: 'Please Choose a Building First'
-        })
-      } else {
-        this.$router.push(`/com?buildingId=${this.currentRow.id}&building=${this.currentRow.name}`)
+        typeFunctions[typeId]()
       }
     }
   },

@@ -110,20 +110,10 @@ export default {
             })
           })
         } else {
-          // data is invalid
-          return false
+          return false    // data is invalid
         }
       })
     }
-  },
-  created () {
-    // this.$http.get('/sos/csv', {})
-    // .then(res => {
-    //   console.log(res)
-    // })
-    // .catch(err => {
-    //   console.log(err)
-    // })
   }
 }
 </script>
@@ -141,7 +131,6 @@ export default {
   margin-right: auto;
   margin-top: 5%;
   padding: 20px;
-  /* border-radius: 3px; */
   width: 60%;
   background-color: white;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);

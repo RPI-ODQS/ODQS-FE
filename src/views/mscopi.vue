@@ -17,23 +17,14 @@
       >
         {{ type }}
       </div>
+
       <el-button
         class="mscopi-button"
-        @click="onClickSave"
+        v-for="(item, index) in ['Save', 'Refresh', 'Export']"
+        :key="index"
+        @click="onClick(item)"
       >
-        Save
-      </el-button>
-      <el-button
-        class="mscopi-button"
-        @click="onClickRefresh"
-      >
-        Refresh
-      </el-button>
-      <el-button
-        class="mscopi-button"
-        @click="onClickExport"
-      >
-        Export
+        {{ item }}
       </el-button>
     </div>
 
@@ -129,35 +120,37 @@
         </el-form-item>
       </el-form>
 
+      <!-- Form of Optimizing Input Parameters -->
       <v-table
-        class="opi-table1"
+        class="opi-table"
+        is-horizontal-resize
+        style="width:100%"
+        row-hover-color="#eee"
+        row-click-color="#edf7ff"
+        :columns="opiColumns2"
+        :table-data="opiTableData2"
+        :cell-edit-done="opiCellEditDone2"
+        v-if="type === 'Optimizing Input Parameters'"
+      />
+
+      <v-table
+        class="opi-table"
         is-horizontal-resize
         style="width:100%"
         row-hover-color="#eee"
         row-click-color="#edf7ff"
         :columns="opiColumns1"
         :table-data="opiTableData1"
-        :cell-edit-done="opiCellEditDone1"
-      />
-
-      <!-- Form of Optimizing Input Parameters -->
-      <v-table
-        is-horizontal-resize
-        style="width:100%"
-        row-hover-color="#eee"
-        row-click-color="#edf7ff"
-        :columns="opiColumns"
-        :table-data="opiTableData"
         :cell-edit-done="opiCellEditDone"
         v-if="type === 'Optimizing Input Parameters'"
       />
-
     </div>
   </div>
 </template>
 
 <script>
 import topbar from '../components/topbar'
+import opiTableConfig from '../metadata/easytable/config'
 
 export default {
   name: 'mscopi',
@@ -166,118 +159,43 @@ export default {
       type: '',
       isEditing: false,
       isLoadingForm: false,
+
+      // msc data model
       mscForm: {
-        id: null,
-        buildingName: null,
         address: null,
-        city: null,
-        zipCode: null,
-        isActive: null,
         dateStart: null,
+        buildingName: null,
+        city: null,
+        id: null,
+        isActive: null,
+        zipCode: null,
+        storageCapacity: null,
         waterHeaterBrand: null,
         waterHeaterCapacity: null,
-        waterHeaterRatedEfficiency: null,
-        storageCapacity: null
+        waterHeaterRatedEfficiency: null
       },
-      opiColumns: [
-        {
-          field: 'hour',
-          title: 'Hour',
-          width: 30,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isResize: true
-        }, {
-          field: 'hotWaterDemand',
-          title: 'Hot Water Demand',
-          width: 130,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isEdit: true,
-          isResize: true
-        }, {
-          field: 'electricityPrice',
-          title: 'Electricity Price',
-          width: 130,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isEdit: true,
-          isResize: true
-        }, {
-          field: 'ambientTemperature',
-          title: 'Ambient Temperature',
-          width: 130,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isEdit: true,
-          isResize: true
-        }, {
-          field: 'demandResponse',
-          title: 'Demand Response',
-          width: 130,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isEdit: true,
-          isResize: true
-        }, {
-          field: 'solarGeneration',
-          title: 'Solar Generation',
-          width: 130,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isEdit: true,
-          isResize: true
-        }
-      ],
-      opiTableData: [],
-      opiColumns1: [
-        {
-          field: 'optimizationType',
-          title: 'Optimization Type',
-          width: 150,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isEdit: true,
-          isResize: true
-        }, {
-          field: 'parameter1',
-          title: 'parameter 1',
-          width: 150,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isEdit: true,
-          isResize: true
-        }, {
-          field: 'parameter2',
-          title: 'Parameter 2',
-          width: 150,
-          titleAlign: 'center',
-          columnAlign: 'center',
-          isEdit: true,
-          isResize: true
-        }
-      ],
-      opiTableData1: [
-        {
-          optimizationType: '',
-          parameter1: '',
-          parameter2: ''
-        }
-      ],
+
+      // opi data models
+      opiColumns1: opiTableConfig.getOpiTable1Title(),
+      opiColumns2: opiTableConfig.getOpiTable2Title(),
+      opiTableData1: [],
+      opiTableData2: [],
       opiForm: {
-        systemDemand: [
+        buildId: null,
+        time: null,
+        hotWater: [
           null, null, null, null, null, null,
           null, null, null, null, null, null,
           null, null, null, null, null, null,
           null, null, null, null, null, null
         ],
-        electricityPrice: [
+        elePrice: [
           null, null, null, null, null, null,
           null, null, null, null, null, null,
           null, null, null, null, null, null,
           null, null, null, null, null, null
         ],
-        ambientTemperature: [
+        ambTemperature: [
           null, null, null, null, null, null,
           null, null, null, null, null, null,
           null, null, null, null, null, null,
@@ -289,16 +207,15 @@ export default {
           null, null, null, null, null, null,
           null, null, null, null, null, null
         ],
-        demandResponse: [
+        demandResponseScaler: [
           null, null, null, null, null, null,
           null, null, null, null, null, null,
           null, null, null, null, null, null,
           null, null, null, null, null, null
         ],
-        isReqForWP: false,
-        inputVar1: null,
-        inputVar2: null,
-        inputVar3: null
+        type: null,
+        input1: null,
+        input2: null
       }
     }
   },
@@ -309,12 +226,41 @@ export default {
     handleDataRowSelect (val) {
       this.mscForm.buildingName = val
     },
+    onClick (op) {
+      switch (op) {
+        case 'Save':
+          this.onClickSave()
+          break
+        case 'Refresh':
+          this.onClickRefresh()
+          break
+        case 'Export':
+          this.onClickExport()
+          break
+      }
+    },
     onClickSave () {
       // TODO: send data to BE
       if (this.type === 'Mechanical System Configurations') {
-
+        this.isLoadingForm = true
+        this.$http.post('/update/msc', this.mscForm, {
+          auth: {
+            username: this.$store.state.userInfo.token,
+            password: 'unused'
+          }
+        })
+        .then(res => {
+          console.log(res)
+          this.isLoadingForm = false
+        })
+        .catch(err => {
+          console.log(err)
+          this.isLoadingForm = false
+        })
       } else {
         this.isLoadingForm = true
+        this.convertOpiFormat(1, [this.opiTableData1, this.opiTableData2])
+        console.log(this.opiForm)
         this.$http.post('/update/opi', this.opiForm, {
           auth: {
             username: this.$store.state.userInfo.token,
@@ -322,6 +268,7 @@ export default {
           }
         })
         .then(res => {
+          console.log(res)
           this.isLoadingForm = false
         })
         .catch(err => {
@@ -334,12 +281,19 @@ export default {
       this.refreshData()
     },
     onClickExport () {},
+    init () {
+      this.mscForm = {}
+      this.opiForm = []
+      this.opiTableData1 = []
+      this.opiTableData2 = []
+    },
     refreshData () {
+      this.init()
       if (this.type === 'Mechanical System Configurations') {
         this.isLoadingForm = true
         this.$http.get('/msc', {
           params: {
-            id: this.mscForm.id
+            id: this.$route.query.id
           },
           auth: {
             username: this.$store.state.userInfo.token,
@@ -367,7 +321,8 @@ export default {
         })
         .then(res => {
           console.log(res)
-          // this.opiForm = res.data
+          this.opiForm = res.data
+          this.convertOpiFormat(0, this.opiForm)
           this.isLoadingForm = false
         })
         .catch(err => {
@@ -376,33 +331,96 @@ export default {
         })
       }
     },
-    // callback
-    opiCellEditDone (newValue, oldValue, rowIndex, rowData, field) {
-      this.opiTableData[rowIndex][field] = newValue
+
+    // type === 0: convert the result from the server; input = this.opiForm
+    // type === 1: convert the client data model; input = [this.opiTableData1, this.opiTableData2]
+    convertOpiFormat (type, input) {
+      if (type === 0) {
+        for (let i = 0; i < 24; ++i) {
+          this.opiTableData1.push({
+            hour: i,
+            hotWaterDemand: input.hotWater[i],
+            electricityPrice: input.elePrice[i],
+            ambientTemperature: input.ambTemperature[i],
+            demandResponse: input.demandResponseScaler[i],
+            solarGeneration: input.solarEnergyOutput[i]
+          })
+        }
+        this.opiTableData2.push({
+          optimizationType: input.type,
+          parameter1: input.input1,
+          parameter2: input.input2
+        })
+      } else {
+        this.opiForm = {
+          buildingId: this.$route.query.id,
+          time: this.opiForm.time,
+          type: null,
+          inputVar1: null,
+          inputVar2: null,
+          hotWater: [
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null
+          ],
+          electricityPrice: [
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null
+          ],
+          ambientTemperature: [
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null
+          ],
+          demandResponse: [
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null
+          ],
+          solarEnergyOutput: [
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null
+          ]
+        }
+        for (let i = 0; i < 24; ++i) {
+          this.opiForm.hotWater[i] = input[0][i].hotWaterDemand
+          this.opiForm.electricityPrice[i] = input[0][i].electricityPrice
+          this.opiForm.ambientTemperature[i] = input[0][i].ambientTemperature
+          this.opiForm.demandResponse = input[0][i].demandResponse
+          this.opiForm.solarEnergyOutput = input[0][i].solarGeneration
+        }
+
+        console.log(input[1][0])
+        this.opiForm.type = input[1][0].optimizationType
+        this.opiForm.inputVar1 = input[1][0].parameter1
+        this.opiForm.inputVar2 = input[1][0].parameter2
+      }
     },
-    opiCellEditDone1 (newValue, oldValue, rowIndex, rowData, field) {
+
+    // DIY my vue-easytables
+    opiCellEditDone (newValue, oldValue, rowIndex, rowData, field) {
       this.opiTableData1[rowIndex][field] = newValue
     },
-    generateDefaultOpiData () {
-      for (let i = 1; i <= 24; ++i) {
-        this.opiTableData.push({
-          hour: i,
-          hotWaterDemand: '',
-          electricityPrice: '',
-          ambientTemperature: '',
-          demandResponse: '',
-          solarGeneration: ''
-        })
-      }
+    opiCellEditDone2 (newValue, oldValue, rowIndex, rowData, field) {
+      this.opiTableData2[rowIndex][field] = newValue
     }
   },
   created: function () {
     this.type = this.$route.query.type
-    this.mscForm.id = this.$route.query.id
-    this.mscForm.buildingName = this.$route.query.name
-
-    this.generateDefaultOpiData()
     this.refreshData()
+    if (this.type === 'Mechanical System Configurations') {
+      this.mscForm.buildingId = this.$route.query.id
+      this.mscForm.buildingName = this.$route.query.name
+    } else {
+      // this.generateDefaultOpiData()
+    }
   }
 }
 </script>
@@ -479,7 +497,7 @@ export default {
   margin-bottom:5px;
 }
 
-.opi-table1 {
+.opi-table {
   margin-bottom: 2vh;
 }
 </style>
