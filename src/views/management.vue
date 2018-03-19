@@ -11,7 +11,7 @@
       </el-button>
       <el-button
         class="management-button"
-        @click="onClickDelete"
+        @click="onClickDeleteUser"
       >
         Delete
       </el-button>
@@ -248,7 +248,7 @@ export default {
       this.editUserTitle = 'Edit User: ' + this.userList[index].userName
       this.userInfoForm.username = this.userList[index].userName
       this.userInfoForm.password = '********'
-      this.userInfoForm.role = this.userList[index].userrole
+      this.userInfoForm.role = this.userList[index].role
       this.userInfoForm.userId = this.userList[index].userId
       this.userInfoForm.buildingList = this.userList[index].buildingList
       this.isEditUserDialogVisable = true
@@ -262,20 +262,19 @@ export default {
           role: this.userInfoForm.role,
           buildingList: []
         }, {
-          auth: {
-            username: this.$store.state.userInfo.token,
-            password: 'unused'
-          }
+          auth: this.$store.state.authInfo
         })
         .then((res) => {
           this.$notify({
             title: 'Success',
-            message: 'Add User Success'
+            message: 'Add User'
           })
+          this.refreshUserList()
           this.isEditUserDialogVisable = false
         })
       } else {
         // edit user
+        console.log(this.userInfoForm)
         this.$http.post('/update/user', {
           userId: this.userInfoForm.userId,
           newUsername: this.userInfoForm.username,
@@ -283,13 +282,16 @@ export default {
           role: this.userInfoForm.role,
           newBuildingList: this.userInfoForm.buildingList
         }, {
-          auth: {
-            username: this.$store.state.userInfo.token,
-            password: 'unused'
-          }
+          auth: this.$store.state.authInfo
         })
         .then(res => {
           console.log(res)
+          this.$notify({
+            title: 'Success',
+            message: 'Edit User'
+          })
+          this.refreshUserList()
+          this.isEditUserDialogVisable = false
         })
         .catch(err => {
           console.log(err)
@@ -307,32 +309,34 @@ export default {
         this.isEditBuildingDialogVisable = true
       }
     },
-    onClickDelete () {
+    onClickDeleteUser () {
       if (this.currentSelectedUsers.length > 0) {
         this.$http.delete('/user', {
-          auth: {
-            username: this.$store.state.userInfo.token,
-            password: 'unused'
-          },
+          auth: this.$store.state.authInfo,
           params: {
             userId: this.currentSelectedUsers[0].userId
           }
         })
         .then(res => {
           console.log(res)
+          this.$notify({
+            title: 'Success',
+            message: 'Delete User'
+          })
+          this.refreshUserList()
         })
         .catch(err => {
           console.log(err)
         })
       }
     },
+    refreshUserList () {
+      this.getAllUsers()
+    },
     getAllUsers () {
       this.isLoadingUsers = true
       this.$http.get('/user', {
-        auth: {
-          username: this.$store.state.userInfo.token,
-          password: 'unused'
-        },
+        auth: this.$store.state.authInfo,
         params: {
           conditions: ''
         }
@@ -345,6 +349,9 @@ export default {
         console.log(err)
         this.isLoadingUsers = false
       })
+    },
+    getBuildingsOfUser (userId) {
+
     }
   },
   created: function () {

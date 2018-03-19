@@ -89,10 +89,7 @@ export default {
   created: function () {
     this.isLoadingBuildings = true
     this.$http.get('/buildings', {
-      auth: {
-        username: this.$store.state.userInfo.token,
-        password: 'unused'
-      }
+      auth: this.$store.state.authInfo
     })
     .then(res => {
       this.$store.commit('updateBuildingList', res.data.buildings)

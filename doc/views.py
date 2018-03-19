@@ -88,7 +88,7 @@ def get_building():
         data = data.decode("utf-8")
         data = json.loads(data)
         print(data)
-        name = data['building_name'] if 'building_name' in data else None
+        name = data['buildingName'] if 'buildingName' in data else None
         id = data['buildingId'] if 'buildingId' in data else None
         if not name:
             return jsonify(status='faild')
@@ -101,14 +101,15 @@ def get_building():
             build.id = 0
 
         build.building_name = name
-        build.is_active = data['is_active'] if 'is_active' in data else None
+        build.is_active = data['isActive'] if 'is_active' in data else None
         build.address = data['address'] if 'address' in data else None
         build.city = data['city'] if 'city' in data else None
-        build.zip_code = data['zip_code'] if 'zip_code' in data else None
-        build.date_start = data['data_start'] if 'data_start' in data else None
-        build.equip_brand = data['equip_brand'] if 'equip_brand' in data else None
-        build.equip_capacity = data['equip_capacity'] if 'equip_capacity' in data else None
-        build.rated_efficiency = data['rated_efficiency'] if 'rated_efficiency' in data else None
+        build.zipCode = data['zipCode'] if 'zipCode' in data else None
+        build.dateStart = data['dateStart'] if 'dateStart' in data else None
+        build.waterHeaterBrand = data['waterHeaterBrand'] if 'waterHeaterBrand' in data else None
+        build.waterHeaterCapacity = data['waterHeaterCapacity'] if 'waterHeaterCapacity' in data else None
+        build.waterHeaterRatedEfficiency = data['waterHeaterRatedEfficiency'] if 'waterHeaterRatedEfficiency' in data else None
+        build.storageCapacity = data['storageCapacity'] if 'storageCapacity' in data else None
         db.session.add(build)
         db.session.commit()
         return jsonify(status='success')
@@ -136,11 +137,11 @@ def opi():
         data = request.args
         building_id = data['id']
         if building_id is None:
-            print('aaa')
+            print('no building')
             return None
         build = OptInput.query.filter_by(build_id = building_id).first()
         if not build:
-            return jsonify(status="asd")
+            return jsonify(status="not found")
         res = build.to_json()
         print(res)
         return jsonify(res)
@@ -148,12 +149,13 @@ def opi():
 
 
 @main.route('/update/opi',methods=['POST'])
-# @auth.login_required
+@auth.login_required
 def opi_update():
     if request.method == 'POST':
         data = request.get_data()
         data = data.decode("utf-8")
         data = json.loads(data)
+        print(data)
         add = 0
         building_id = data['buildingId']
         print(data['hotWater'])

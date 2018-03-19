@@ -12,6 +12,10 @@ export default new Vuex.Store({
       userName: null,
       token: null
     },
+    authInfo: {
+      username: '',
+      password: 'unused'
+    },
     buildingList: [],
     sosHeaders: {
       temperature: ['t1', 't2', 't3', 't4'],
@@ -28,6 +32,7 @@ export default new Vuex.Store({
     },
     updateUserInfo: (state, newUserInfo) => {
       state.userInfo = newUserInfo
+      state.authInfo.username = state.userInfo.token
     },
     updateIsLogin: (state, newIsLogin) => {
       state.isLogin = newIsLogin

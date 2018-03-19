@@ -9,7 +9,7 @@
         id="current-building-info"
         class="opc-info data-table-title"
       >
-        Building: {{ mscForm.buildingName }}
+        Building: {{ buildingName }}
       </div>
       <div
         id="type-info"
@@ -20,9 +20,10 @@
 
       <el-button
         class="mscopi-button"
-        v-for="(item, index) in ['Save', 'Refresh', 'Export']"
+        v-for="(item, index) in ['Save', 'Refresh', 'Export', 'Edit']"
         :key="index"
         @click="onClick(item)"
+        v-if="type === 'Mechanical System Configurations' || item !== 'Edit'"
       >
         {{ item }}
       </el-button>
@@ -33,7 +34,7 @@
       id="data-field-container"
       v-loading="isLoadingForm"
     >
-      <!-- Form of Mechanical Mystem Configurations -->
+      <!-- Form of Mechanical System Configurations -->
       <el-form
         class="form"
         ref="mscForm"
@@ -151,71 +152,37 @@
 <script>
 import topbar from '../components/topbar'
 import opiTableConfig from '../metadata/easytable/config'
+import formFactory from '../models/formFactory'
 
 export default {
   name: 'mscopi',
   data () {
     return {
       type: '',
+      buildingId: null,
+      buildingName: null,
       isEditing: false,
       isLoadingForm: false,
 
       // msc data model
-      mscForm: {
-        address: null,
-        dateStart: null,
-        buildingName: null,
-        city: null,
-        id: null,
-        isActive: null,
-        zipCode: null,
-        storageCapacity: null,
-        waterHeaterBrand: null,
-        waterHeaterCapacity: null,
-        waterHeaterRatedEfficiency: null
-      },
+      mscForm: formFactory.getInitMscForm(),
 
       // opi data models
       opiColumns1: opiTableConfig.getOpiTable1Title(),
       opiColumns2: opiTableConfig.getOpiTable2Title(),
       opiTableData1: [],
       opiTableData2: [],
-      opiForm: {
-        buildId: null,
-        time: null,
-        hotWater: [
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null
-        ],
-        elePrice: [
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null
-        ],
-        ambTemperature: [
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null
-        ],
-        solarEnergyOutput: [
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null
-        ],
-        demandResponseScaler: [
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null,
-          null, null, null, null, null, null
-        ],
-        type: null,
-        input1: null,
-        input2: null
+      opiForm: {  // receive data form
+        // buildId: null,
+        // time: null,
+        // hotWater: [],
+        // elePrice: [],
+        // ambTemperature: [],
+        // solarEnergyOutput: [],
+        // demandResponseScaler: [],
+        // type: null,
+        // input1: null,
+        // input2: null
       }
     }
   },
@@ -237,25 +204,28 @@ export default {
         case 'Export':
           this.onClickExport()
           break
+        case 'Edit':
+          this.onClickEdit()
+          break
       }
     },
     onClickSave () {
       // TODO: send data to BE
       if (this.type === 'Mechanical System Configurations') {
         this.isLoadingForm = true
-        this.$http.post('/update/msc', this.mscForm, {
-          auth: {
-            username: this.$store.state.userInfo.token,
-            password: 'unused'
-          }
+        this.mscForm.buildingId = this.buildingId
+        this.$http.put('/buildings', this.mscForm, {
+          auth: this.$store.state.authInfo
         })
         .then(res => {
           console.log(res)
           this.isLoadingForm = false
+          this.isEditing = false
         })
         .catch(err => {
           console.log(err)
           this.isLoadingForm = false
+          this.isEditing = false
         })
       } else {
         this.isLoadingForm = true
@@ -281,27 +251,33 @@ export default {
       this.refreshData()
     },
     onClickExport () {},
+    onClickEdit () {
+      this.isEditing = true
+    },
     init () {
       this.mscForm = {}
-      this.opiForm = []
+      this.opiForm = {}
       this.opiTableData1 = []
       this.opiTableData2 = []
     },
     refreshData () {
       this.init()
       if (this.type === 'Mechanical System Configurations') {
+        // MSC Req
         this.isLoadingForm = true
         this.$http.get('/msc', {
           params: {
             id: this.$route.query.id
           },
-          auth: {
-            username: this.$store.state.userInfo.token,
-            password: 'unused'
-          }
+          auth: this.$store.state.authInfo
+          // {
+          //   username: this.$store.state.userInfo.token,
+          //   password: 'unused'
+          // }
         })
         .then(res => {
           this.mscForm = res.data
+          console.log(res.data)
           this.isLoadingForm = false
         })
         .catch(err => {
@@ -309,6 +285,7 @@ export default {
           this.isLoadingForm = false
         })
       } else {
+        // OPI Req
         this.isLoadingForm = true
         this.$http.get('/opi', {
           params: {
@@ -352,55 +329,28 @@ export default {
           parameter2: input.input2
         })
       } else {
-        this.opiForm = {
-          buildingId: this.$route.query.id,
-          time: this.opiForm.time,
-          type: null,
-          inputVar1: null,
-          inputVar2: null,
-          hotWater: [
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null
-          ],
-          electricityPrice: [
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null
-          ],
-          ambientTemperature: [
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null
-          ],
-          demandResponse: [
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null
-          ],
-          solarEnergyOutput: [
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null,
-            null, null, null, null, null, null
-          ]
-        }
+        let oldTime = this.opiForm.time
+        let oldBuildingId = this.this.$route.query.id
+        this.opiForm = formFactory.getInitOpiForm()
+        this.opiForm.time = oldTime
+        this.opiForm.buildingId = oldBuildingId
         for (let i = 0; i < 24; ++i) {
-          this.opiForm.hotWater[i] = input[0][i].hotWaterDemand
-          this.opiForm.electricityPrice[i] = input[0][i].electricityPrice
-          this.opiForm.ambientTemperature[i] = input[0][i].ambientTemperature
-          this.opiForm.demandResponse = input[0][i].demandResponse
-          this.opiForm.solarEnergyOutput = input[0][i].solarGeneration
+          this.opiForm.hotWater[i] = this.handleUndefinedValue(input[0][i].hotWaterDemand)
+          this.opiForm.electricityPrice[i] = this.handleUndefinedValue(input[0][i].electricityPrice)
+          this.opiForm.ambientTemperature[i] = this.handleUndefinedValue(input[0][i].ambientTemperature)
+          this.opiForm.demandResponse[i] = this.handleUndefinedValue(input[0][i].demandResponse)
+          this.opiForm.solarEnergyOutput[i] = this.handleUndefinedValue(input[0][i].solarGeneration)
         }
-
-        console.log(input[1][0])
         this.opiForm.type = input[1][0].optimizationType
         this.opiForm.inputVar1 = input[1][0].parameter1
         this.opiForm.inputVar2 = input[1][0].parameter2
+      }
+    },
+    handleUndefinedValue (input) {
+      if (input) {
+        return input
+      } else {
+        return ''
       }
     },
 
@@ -414,13 +364,9 @@ export default {
   },
   created: function () {
     this.type = this.$route.query.type
+    this.buildingId = this.$route.query.id
+    this.buildingName = this.$route.query.name
     this.refreshData()
-    if (this.type === 'Mechanical System Configurations') {
-      this.mscForm.buildingId = this.$route.query.id
-      this.mscForm.buildingName = this.$route.query.name
-    } else {
-      // this.generateDefaultOpiData()
-    }
   }
 }
 </script>
