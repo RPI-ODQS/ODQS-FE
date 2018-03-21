@@ -7,40 +7,19 @@
       <el-button
         class="sos-control-bar-button"
         v-if="activeTab !== 'Photo'"
+        v-for="(item, index) in ['Refresh', 'Export', 'Upload']"
+        :key="index"
+        @click="onClick(item)"
       >
-        Refresh
-      </el-button>
-      <el-button
-        class="sos-control-bar-button"
-        v-if="activeTab !== 'Photo'"
-        @click="onClickExport"
-      >
-        Export
-      </el-button>
-      <el-button
-        class="sos-control-bar-button"
-        v-if="activeTab !== 'Photo'"
-        @click="onClickUpload"
-      >
-        Upload
+        {{ item }}
       </el-button>
       <el-button
         class="sos-control-bar-button"
         v-if="activeTab === 'Photo'"
+        v-for="(item, index) in ['Take Photo', 'Download', 'Delete']"
+        :key="index"
       >
-        Take Photo
-      </el-button>
-      <el-button
-        class="sos-control-bar-button"
-        v-if="activeTab === 'Photo'"
-      >
-        Download
-      </el-button>
-      <el-button
-        class="sos-control-bar-button"
-        v-if="activeTab === 'Photo'"
-      >
-        Delete
+        {{ item }}
       </el-button>
     </div>
     <div id="tabs-container">
@@ -96,7 +75,7 @@ export default {
   components: {
     TopBar: topbar,
     SosDataList: sosDataList,
-    sosPhoto: sosPhoto
+    SosPhoto: sosPhoto
   },
   methods: {
     handleSwitch (tab, event) {
@@ -106,11 +85,17 @@ export default {
         this.displayInfo = 'Web Camera'
       }
     },
-    onClickExport () {
-      this.$refs.sdl.export()
-    },
-    onClickUpload () {
-      this.uploadDialogVisible = true
+    onClick (type) {
+      switch (type) {
+        case 'Refresh':
+          break
+        case 'Export':
+          this.$refs.sdl.export()
+          break
+        case 'Upload':
+          this.uploadDialogVisible = true
+          break
+      }
     }
   },
   created: function () {

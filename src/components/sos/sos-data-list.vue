@@ -57,7 +57,16 @@
       />
     </div>
 
-    <a ref="csv" v-if="false">{{ csvLink }}</a>
+    <div id="invisiable-link-container">
+      <a
+        id="invisiable-link"
+        ref="csv"
+        :href="csvLink"
+      >
+        ##
+      </a>
+    </div>
+
   </div>
 </template>
 
@@ -130,12 +139,8 @@ export default {
   },
   methods: {
     export () {
-      // console.log('export')
       this.$http.get('/sos/csv', {
-        auth: {
-          username: this.$store.state.userInfo.token,
-          password: 'unused'
-        },
+        auth: this.$store.state.authInfo,
         params: {
           buildingId: 1,
           sensorsIds: {
@@ -149,9 +154,13 @@ export default {
         }
       })
       .then(res => {
-        console.log(res)
-        this.csvLink = res
-        this.$refs.csv.click()
+        this.csvLink = this.$http.defaults.baseURL + res.data.url.substr(1)
+        this.$nextTick(() => {
+          document.getElementById('invisiable-link').click()
+        })
+        // setTimeout(() => {
+        //
+        // }, 0)
       })
       .catch(err => {
         console.log(err)
@@ -193,8 +202,8 @@ export default {
     this.building = this.$route.query.building
     this.buildingId = this.$route.query.buildingId
 
-    this.getSosHeader()
-    this.export()
+    // this.getSosHeader()
+    // this.export()
   }
 }
 </script>
@@ -243,5 +252,11 @@ export default {
 
 #sos-data-list-result {
   margin-top: 50px;
+}
+
+#invisiable-link-container {
+  /* visibility: hidden; */
+  height: 0;
+  overflow: hidden;
 }
 </style>

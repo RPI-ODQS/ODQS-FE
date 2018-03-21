@@ -82,6 +82,7 @@
       <div class="management-table-container">
         <el-table
           :data="accessibleBuildings"
+          @selection-change="handleBuildingSelectionChange"
         >
           <el-table-column
             type="selection"
@@ -128,9 +129,13 @@
         </el-form-item>
         <el-form-item label="role">
           <el-radio-group v-model="userInfoForm.role">
-            <el-radio :label="1">Super Admin</el-radio>
-            <el-radio :label="2">Admin</el-radio>
-            <el-radio :label="3">User</el-radio>
+            <el-radio
+              v-for="(item, index) in ['Super Admin', 'Admin', 'User']"
+              :key="index"
+              :label="index + 1"
+            >
+              {{ item }}
+            </el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -158,6 +163,7 @@
     >
       <el-table
         :data="buildingInfoTable"
+        @selection-change="handleAddBuildingSelectionChange"
       >
         <el-table-column
           type="selection"
@@ -186,7 +192,7 @@
         </el-button>
         <el-button
           type="primary"
-          @click="isEditBuildingDialogVisable = false"
+          @click="onClickAddBuildingConfirm"
         >
           Confirm
         </el-button>
@@ -206,6 +212,8 @@ export default {
       isLoadingUsers: false,
       currentUser: null,
       currentSelectedUsers: [],
+      currentSelectedBuildings: [],
+      currentSelectedAddBuildings: [],
       userList: [],
       accessibleBuildings: [
         // {
@@ -225,15 +233,14 @@ export default {
 
       isEditBuildingDialogVisable: false,
       editBuildingTitle: null,
-      buildingInfoTable: [
-        { id: 1, name: 'B1' }
-      ]
+      buildingInfoTable: []
     }
   },
   components: {
     TopBar: topbar
   },
   methods: {
+    // User
     handleUserRowSelect (val) {
       this.currentUser = val
     },
@@ -298,17 +305,6 @@ export default {
         })
       }
     },
-    onClickAddBuilding () {
-      if (this.currentUser === null) {
-        this.$notify({
-          title: 'Warning',
-          message: 'Please Choose a User First'
-        })
-      } else {
-        this.editBuildingTitle = 'Add Building for ' + this.currentUser.userName
-        this.isEditBuildingDialogVisable = true
-      }
-    },
     onClickDeleteUser () {
       if (this.currentSelectedUsers.length > 0) {
         this.$http.delete('/user', {
@@ -350,12 +346,80 @@ export default {
         this.isLoadingUsers = false
       })
     },
-    getBuildingsOfUser (userId) {
 
+    // Building
+    refreshUserBuildingList () {
+      this.accessibleBuildings = this.currentUser.buildingList
+    },
+    handleBuildingSelectionChange (val) {
+      this.currentSelectedBuildings = val
+    },
+    handleAddBuildingSelectionChange (val) {
+      this.currentSelectedAddBuildings = val
+    },
+    onClickAddBuilding () {
+      if (this.currentUser === null) {
+        this.$notify({
+          title: 'Warning',
+          message: 'Please Choose a User'
+        })
+      } else {
+        this.editBuildingTitle = 'Add Building for ' + this.currentUser.userName
+        this.isEditBuildingDialogVisable = true
+      }
+    },
+    onClickAddBuildingConfirm () {
+      // console.log(this.getIdFromSelectedList(this.currentSelectedAddBuildings))
+      if (!this.currentUser.buildingList) {
+        this.currentUser.buildingList = []
+      }
+      for (let i = 0; i < this.currentSelectedAddBuildings.length; ++i) {
+        this.currentUser.buildingList.push(this.currentSelectedAddBuildings[i].id)
+      }
+      console.log({
+        userId: this.currentUser.userId,
+        newUsername: this.currentUser.userName,
+        newPassword: '',
+        role: this.currentUser.role,
+        newBuildingList: this.currentUser.buildingList
+      })
+      this.$http.post('/update/user', {
+        userId: this.currentUser.userId,
+        newUsername: this.currentUser.userName,
+        newPassword: '',
+        role: this.currentUser.role,
+        newBuildingList: this.currentUser.buildingList
+      }, {
+        auth: this.$store.state.authInfo
+      })
+      .then(res => {
+        console.log(res)
+        this.$notify({
+          title: 'Success',
+          message: 'Edit User Buiilding'
+        })
+        this.refreshUserBuildingList()
+        this.isEditBuildingDialogVisable = false
+      })
+      .catch(err => {
+        console.log(err)
+        this.isEditBuildingDialogVisable = false
+      })
+    },
+    onClickDeleteBuilding () {
+      console.log(this.getIdFromSelectedList(this.currentSelectedBuildings))
+    },
+    getIdFromSelectedList (selected) {
+      let resultList = []
+      for (let i = 0; i < selected.length; ++i) {
+        resultList.push(selected[i].id)
+      }
+      return resultList
     }
   },
   created: function () {
     this.getAllUsers()
+    this.buildingInfoTable = this.$store.state.buildingList
   }
 }
 </script>
