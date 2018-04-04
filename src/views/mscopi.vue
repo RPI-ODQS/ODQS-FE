@@ -330,7 +330,7 @@ export default {
         })
       } else {
         let oldTime = this.opiForm.time
-        let oldBuildingId = this.this.$route.query.id
+        let oldBuildingId = this.$route.query.id
         this.opiForm = formFactory.getInitOpiForm()
         this.opiForm.time = oldTime
         this.opiForm.buildingId = oldBuildingId

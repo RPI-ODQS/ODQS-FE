@@ -33,6 +33,8 @@ export default {
   name: 'sos-photo',
   data () {
     return {
+      building: null,
+      buildingId: null,
       queryForm: {
         timeRange: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       },
@@ -65,7 +67,29 @@ export default {
     onSelectMultipleImage (data) {
       this.imageMultipleSelected = data
       // console.log(this.imageMultipleSelected)
+    },
+    async getPhotos () {
+      let request = {
+        auth: this.$store.state.authInfo,
+        param: {
+          buildingId: 1,
+          timeFrom: '2017-12-20 10',
+          timeTo: ''
+        }
+      }
+      try {
+        let res = await this.$http.get('/picture', request)
+        console.log(res)
+      } catch (err) {
+        console.err(err)
+      }
     }
+  },
+  created () {
+    this.building = this.$route.query.name
+    this.buildingId = this.$route.query.id
+
+    // this.getPhotos()
   }
 }
 </script>

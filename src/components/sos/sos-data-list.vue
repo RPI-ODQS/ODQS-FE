@@ -46,7 +46,12 @@
           type="datetimerange"
           placeholder="选择时间范围">
         </el-date-picker>
-        <el-button type="primary">Search</el-button>
+        <el-button
+          type="primary"
+          @click="onClickSearch"
+        >
+          Search
+        </el-button>
       </el-form-item>
     </el-form>
     <div id="sos-data-list-result">
@@ -77,8 +82,11 @@ export default {
   name: 'sos-data-list',
   data () {
     return {
+      buildingName: null,
+      buildingId: null,
       csvLink: null,
       isLoadingHeader: false,
+      sosHeader: null,
       selectedForm: {
         temperature: [],
         flow: [],
@@ -86,8 +94,6 @@ export default {
         current: [],
         timeRange: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       },
-      buildingName: null,
-      buildingId: null,
       temperatureChartData: {
         labels: [
           'January', 'February', 'March', 'April',
@@ -138,8 +144,8 @@ export default {
     LineChart
   },
   methods: {
-    export () {
-      this.$http.get('/sos/csv', {
+    async export () {
+      let request = {
         auth: this.$store.state.authInfo,
         params: {
           buildingId: 1,
@@ -152,58 +158,55 @@ export default {
           timeFrom: '2017-10-10 1',
           timeTo: '2017-10-11 11'
         }
-      })
-      .then(res => {
+      }
+      try {
+        let res = await this.$http.get('/sos/csv', request)
         this.csvLink = this.$http.defaults.baseURL + res.data.url.substr(1)
-        this.$nextTick(() => {
-          document.getElementById('invisiable-link').click()
-        })
-        // setTimeout(() => {
-        //
-        // }, 0)
-      })
-      .catch(err => {
+        this.$nextTick(() => { document.getElementById('invisiable-link').click() })
+      } catch (err) {
         console.log(err)
-      })
+      }
     },
-    getSosHeader () {
+    async getSosHeader () {
       // this.isLoadingHeader = true
-      // this.$http.get('/sos/header', {
-      //   params: {
-      //     buildingId: this.buildingId
-      //   }
-      // })
-      // .then(res => {
-      //   console.log(res)
-      //   this.isLoadingHeader = false
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      //   this.isLoadingHeader = false
-      // })
+      try {
+        let request = {
+          auth: this.$store.state.authInfo,
+          params: {
+            buildingId: this.buildingId
+          }
+        }
+        console.log(request)
+        let res = await this.$http.get('/sos/header', request)
+        console.log(res)
+        // this.isLoadingHeader = false
+      } catch (err) {
+        console.log(err)
+        // this.isLoadingHeader = false
+      }
     },
-    onClickSearch () {
-      // this.$http.get('/sos/data', {
-      //   params: {
-      //     buildingId: 1,
-      //     timeFrom: '2017-12-20 10',
-      //     timeTo: '2017-12-20 11'
-      //   }
-      // })
-      // .then(res => {
-      //   console.log(res)
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      // })
+    async onClickSearch () {
+      let request = {
+        auth: this.$store.state.authInfo,
+        params: {
+          buildingId: 1,
+          timeFrom: '2017-12-20 10',
+          timeTo: '2017-12-20 11'
+        }
+      }
+      try {
+        let res = await this.$http.get('/sos/data', request)
+        console.log(res)
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
   created: function () {
-    this.building = this.$route.query.building
-    this.buildingId = this.$route.query.buildingId
+    this.building = this.$route.query.name
+    this.buildingId = this.$route.query.id
 
-    // this.getSosHeader()
-    // this.export()
+    this.getSosHeader()
   }
 }
 </script>

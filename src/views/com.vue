@@ -39,6 +39,7 @@ export default {
   name: 'com',
   data () {
     return {
+      buildingId: null,
       buildingName: null,
       displayInfo: null,
       comColumns: [
@@ -114,6 +115,21 @@ export default {
       this.comTableData[rowIndex][field] = newValue
     },
 
+    async getHistoryCommand () {
+      let request = {
+        auth: this.$store.state.authInfo,
+        param: {
+          buildingId: this.buildingId
+        }
+      }
+      try {
+        let res = await this.$http.get('/command', request)
+        console.log(res)
+      } catch (err) {
+        console.error(err)
+      }
+    },
+
     onClickAddButton () {
       let curDate = new Date()
       let formatedDate = `${curDate.getMonth() + 1}/${curDate.getDate()}/${curDate.getFullYear()} `
@@ -130,6 +146,9 @@ export default {
   },
   created () {
     this.buildingName = this.$route.query.name
+    this.buildingId = this.$route.query.id
+
+    this.getHistoryCommand()
   }
 }
 </script>
