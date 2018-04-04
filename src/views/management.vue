@@ -393,51 +393,7 @@ export default {
         this.isEditBuildingDialogVisable = true
       }
     },
-    async onClickAddBuildingConfirm () {
-      let newBuildingList = new Set()
-      for (let item of this.currentUser.buildingList) {
-        newBuildingList.add(Number(item.id))
-      }
-      for (let item of this.currentSelectedAddBuildings) {
-        newBuildingList.add(Number(item.id))
-      }
-      console.log([...newBuildingList])
-      let updateUserReqBody = {
-        userId: this.currentUser.userId,
-        newUsername: this.currentUser.userName,
-        newPassword: '',
-        role: this.currentUser.role,
-        newBuildingList: [...newBuildingList]
-      }
-      try {
-        this.isDialogLoading = true
-        await this.$http.post('/update/user',
-                              updateUserReqBody,
-                              { auth: this.$store.state.authInfo })
-        await this.getUsersBuildings()
-        this.refreshUserBuildingList()
-        this.isDialogLoading = false
-        this.isEditBuildingDialogVisable = false
-        this.$notify({
-          title: 'Success',
-          message: 'Edit User Buiilding'
-        })
-      } catch (err) {
-        console.log(err)
-        this.isEditBuildingDialogVisable = false
-      }
-    },
-    async onClickDeleteBuilding () {
-      if (!this.currentUser) {
-        return
-      }
-      let newBuildingList = new Set()
-      for (let item of this.currentUser.buildingList) {
-        newBuildingList.add(Number(item.id))
-      }
-      for (let item of this.currentSelectedBuildings) {
-        newBuildingList.delete(Number(item.id))
-      }
+    async updateUserBuildingList (newBuildingList, successMsg) {
       let updateUserReqBody = {
         userId: this.currentUser.userId,
         newUsername: this.currentUser.userName,
@@ -453,21 +409,38 @@ export default {
         await this.getUsersBuildings()
         this.refreshUserBuildingList()
         this.isAccessibleBuildingsLoading = false
+        this.isEditBuildingDialogVisable = false
         this.$notify({
           title: 'Success',
-          message: 'Delete User Buiilding'
+          message: successMsg
         })
       } catch (err) {
         console.log(err)
         this.isEditBuildingDialogVisable = false
       }
     },
-    getIdFromSelectedList (selected) {
-      let resultList = []
-      for (let i = 0; i < selected.length; ++i) {
-        resultList.push(selected[i].id)
+    async onClickAddBuildingConfirm () {
+      let newBuildingList = new Set()
+      for (let item of this.currentUser.buildingList) {
+        newBuildingList.add(Number(item.id))
       }
-      return resultList
+      for (let item of this.currentSelectedAddBuildings) {
+        newBuildingList.add(Number(item.id))
+      }
+      this.updateUserBuildingList(newBuildingList, 'Add User Building')
+    },
+    async onClickDeleteBuilding () {
+      if (!this.currentUser) {
+        return
+      }
+      let newBuildingList = new Set()
+      for (let item of this.currentUser.buildingList) {
+        newBuildingList.add(Number(item.id))
+      }
+      for (let item of this.currentSelectedBuildings) {
+        newBuildingList.delete(Number(item.id))
+      }
+      this.updateUserBuildingList(newBuildingList, 'Delete User Buiilding')
     }
   },
   created: function () {

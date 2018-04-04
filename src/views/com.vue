@@ -118,7 +118,7 @@ export default {
     async getHistoryCommand () {
       let request = {
         auth: this.$store.state.authInfo,
-        param: {
+        params: {
           buildingId: this.buildingId
         }
       }

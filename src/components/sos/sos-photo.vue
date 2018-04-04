@@ -71,7 +71,7 @@ export default {
     async getPhotos () {
       let request = {
         auth: this.$store.state.authInfo,
-        param: {
+        params: {
           buildingId: 1,
           timeFrom: '2017-12-20 10',
           timeTo: ''
