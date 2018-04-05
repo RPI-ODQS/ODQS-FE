@@ -1,12 +1,14 @@
 <template>
-  <div class="sos-data-list">
+  <div
+    class="sos-data-list"
+    v-loading="isLoading"
+  >
     <div class="sos-data-list-title">Select Data Field:</div>
     <el-form id="sos-data-select-form"
       ref="selectedForm"
       :model="selectedForm"
       label-position="left"
       label-width="70px"
-      v-loading="isLoadingHeader"
     >
       <el-form-item class="sos-data-form-item" label="Current">
         <el-checkbox-group v-model="selectedForm.current">
@@ -106,7 +108,7 @@ export default {
       buildingName: null,
       buildingId: null,
       csvLink: null,
-      isLoadingHeader: false,
+      isLoading: false,
       sosHeader: {
         Current: [],
         Flow: [],
@@ -124,41 +126,16 @@ export default {
       },
 
       // chart
-      colors: [
-        'RGBA(188, 223, 250, 0.25)',
-        'RGBA(103, 182, 244, 0.25)',
-        'RGBA(179, 158, 217, 0.25)',
-        'RGBA(79, 110, 251, 0.25)'
-      ],
-      chartNames: [
-        'Temperature'
-      ],
+      chartNames: [],
       chartLabels: [],
       chartData: {
-        Temperature: {
-          labels: [
-            'January', 'February', 'March', 'April',
-            'May', 'June', 'July', 'August',
-            'September', 'October', 'November', 'December'
-          ],
-          datasets: [
-            {
-              label: 'Temperture 1',
-              data: [
-                40, 20, 30, 40,
-                20, 50, 40, 30,
-                40, 60, 30, 50
-              ]
-            }, {
-              label: 'Temperture 2',
-              data: [
-                20, 50, 80, 60,
-                50, 30, 20, 60,
-                20, 70, 20, 70
-              ]
-            }
-          ]
-        }
+        // Temperature: {
+        //   labels: [],
+        //   datasets: [{
+        //       label: 'Temperture 1',
+        //       data: []
+        //   }]
+        // }
       },
       chartOptions: {}
     }
@@ -191,7 +168,7 @@ export default {
       }
     },
     async getSosHeader () {
-      this.isLoadingHeader = true
+      this.isLoading = true
       try {
         let request = {
           auth: this.$store.state.authInfo,
@@ -215,14 +192,13 @@ export default {
         for (let key in res.data.temperature) {
           this.sosHeader.Temperature.push(key)
         }
-        this.isLoadingHeader = false
+        this.isLoading = false
       } catch (err) {
         console.log(err)
-        this.isLoadingHeader = false
+        this.isLoading = false
       }
     },
     async onClickSearch () {
-      console.log(this.selectedForm)
       let [from, to] = [...this.selectedForm.timeRange].map(value => `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}`)
       let request = {
         auth: this.$store.state.authInfo,
@@ -232,24 +208,57 @@ export default {
           timeTo: to
         }
       }
+      let [res, data] = [null, null]
+      this.isLoading = true
       try {
-        let res = await this.$http.get('/sos/data', request)
-        console.log(res)
+        res = await this.$http.get('/sos/data', request)
+        data = {
+          current: res.data.current,
+          flow: res.data.Flow,
+          pressure: res.data.pressure,
+          switch: res.data.switch,
+          temperature: res.data.temperature
+        }
       } catch (err) {
         console.log(err)
       }
+
+      this.chartNames = []
+      this.generateLabels(this.selectedForm.timeRange[0], res.data.step, 24)
+      // generate chart
+      for (let type in this.selectedForm) {
+        if (type !== 'timeRange') {
+          let chartContent = []
+          for (let aIns of this.selectedForm[type]) {
+            // generate a chart
+            chartContent.push({
+              label: aIns,
+              data: data[type][aIns].data
+            })
+          }
+          if (this.selectedForm[type].length > 0) {
+            this.chartNames.push(type)
+            this.generateChart(type, chartContent)
+          }
+        }
+      }
+      this.isLoading = false
     },
     generateLabels (from, timeStep, n) {
-      // TODO
+      this.chartLabels = []
+      let fromTime = from.getTime()
+      let [to, ymd, hms] = [null, null, null]
       for (let i = 0; i < n; ++i) {
-        this.chartLabels.push(from + timeStep * i)
+        to = new Date(fromTime + timeStep * i)
+        ymd = `${to.getFullYear()}-${to.getMonth() + 1}-${to.getDate()}`
+        hms = `${to.getHours()}:${to.getMinutes()}:${to.getSeconds()}`
+        this.chartLabels.push(`${ymd} ${hms}`)
       }
     },
-    // content: [{label: xxx, data: xxx}]
     generateChart (type, content) {
-      let label = this.chartLabels
+      let that = this
       this.chartData[type] = {
-        labels: label,
+        labels: that.chartLabels,
         datasets: content
       }
     }
