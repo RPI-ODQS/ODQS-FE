@@ -5,39 +5,57 @@
       ref="selectedForm"
       :model="selectedForm"
       label-position="left"
-      label-width="100px"
+      label-width="70px"
       v-loading="isLoadingHeader"
     >
-      <el-form-item class="sos-data-form-item" label="Temperature">
-        <el-checkbox-group v-model="selectedForm.temperature">
-          <el-checkbox label="Temperature 1" name="temperature"></el-checkbox>
-          <el-checkbox label="Temperature 2" name="temperature"></el-checkbox>
-          <el-checkbox label="Temperature 3" name="temperature"></el-checkbox>
-          <el-checkbox label="Temperature 4" name="temperature"></el-checkbox>
+      <el-form-item class="sos-data-form-item" label="Current">
+        <el-checkbox-group v-model="selectedForm.current">
+          <el-checkbox
+            v-for="(item, index) in sosHeader.Current"
+            :key="index"
+            :label="item"
+            name="current"
+          ></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item class="sos-data-form-item" label="Flow">
         <el-checkbox-group v-model="selectedForm.flow">
-          <el-checkbox label="Flow 1" name="flow"></el-checkbox>
-          <el-checkbox label="Flow 2" name="flow"></el-checkbox>
-          <el-checkbox label="Flow 3" name="flow"></el-checkbox>
-          <el-checkbox label="Flow 4" name="flow"></el-checkbox>
+          <el-checkbox
+            v-for="(item, index) in sosHeader.Flow"
+            :key="index"
+            :label="item"
+            name="flow"
+          ></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item class="sos-data-form-item" label="Pressure">
+       <el-form-item class="sos-data-form-item" label="Pressure">
         <el-checkbox-group v-model="selectedForm.pressure">
-          <el-checkbox label="Pressure 1" name="pressure"></el-checkbox>
-          <el-checkbox label="Pressure 2" name="pressure"></el-checkbox>
-          <el-checkbox label="Pressure 3" name="pressure"></el-checkbox>
-          <el-checkbox label="Pressure 4" name="pressure"></el-checkbox>
+          <el-checkbox
+            v-for="(item, index) in sosHeader.Pressure"
+            :key="index"
+            :label="item"
+            name="pressure"
+          ></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item class="sos-data-form-item" label="Current">
-        <el-checkbox-group v-model="selectedForm.current">
-          <el-checkbox label="Current 1" name="current"></el-checkbox>
-          <el-checkbox label="Current 2" name="current"></el-checkbox>
-          <el-checkbox label="Current 3" name="current"></el-checkbox>
-          <el-checkbox label="Current 4" name="current"></el-checkbox>
+       <el-form-item class="sos-data-form-item" label="Switch">
+        <el-checkbox-group v-model="selectedForm.switch">
+          <el-checkbox
+            v-for="(item, index) in sosHeader.Switch"
+            :key="index"
+            :label="item"
+            name="switch"
+          ></el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item class="sos-data-form-item" label="Temperature">
+        <el-checkbox-group v-model="selectedForm.temperature">
+          <el-checkbox
+            v-for="(item, index) in sosHeader.Temperature"
+            :key="index"
+            :label="item"
+            name="temperature"
+          ></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item class="sos-data-form-item" label="Time">
@@ -54,9 +72,12 @@
         </el-button>
       </el-form-item>
     </el-form>
+
     <div id="sos-data-list-result">
       <line-chart
-        :chart-data="temperatureChartData"
+        v-for="(item, index) in chartNames"
+        :key="index"
+        :chart-data="chartData[item]"
         :options="chartOptions"
         :height="220"
       />
@@ -86,58 +107,60 @@ export default {
       buildingId: null,
       csvLink: null,
       isLoadingHeader: false,
-      sosHeader: null,
+      sosHeader: {
+        Current: [],
+        Flow: [],
+        Pressure: [],
+        Switch: [],
+        Temperature: []
+      },
       selectedForm: {
-        temperature: [],
+        current: [],
         flow: [],
         pressure: [],
-        current: [],
+        switch: [],
+        temperature: [],
         timeRange: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       },
-      temperatureChartData: {
-        labels: [
-          'January', 'February', 'March', 'April',
-          'May', 'June', 'July', 'August',
-          'September', 'October', 'November', 'December'
-        ],
-        datasets: [
-          {
-            label: 'Temperture 1',
-            backgroundColor: 'RGBA(188, 223, 250, 0.25)',
-            data: [
-              40, 20, 30, 40,
-              20, 50, 40, 30,
-              40, 60, 30, 50
-            ]
-          }, {
-            label: 'Temperture 2',
-            backgroundColor: 'RGBA(103, 182, 244, 0.25)',
-            data: [
-              20, 50, 80, 60,
-              50, 30, 20, 60,
-              20, 70, 20, 70
-            ]
-          }, {
-            label: 'Temperture 3',
-            backgroundColor: 'RGBA(179, 158, 217, 0.25)',
-            data: [
-              10, 40, 70, 20,
-              30, 30, 30, 70,
-              20, 40, 50, 60
-            ]
-          }, {
-            label: 'Temperture 4',
-            backgroundColor: 'RGBA(79, 110, 251, 0.25)',
-            data: [
-              40, 50, 60, 70,
-              60, 50, 30, 20,
-              20, 30, 50, 60
-            ]
-          }
-        ]
+
+      // chart
+      colors: [
+        'RGBA(188, 223, 250, 0.25)',
+        'RGBA(103, 182, 244, 0.25)',
+        'RGBA(179, 158, 217, 0.25)',
+        'RGBA(79, 110, 251, 0.25)'
+      ],
+      chartNames: [
+        'Temperature'
+      ],
+      chartLabels: [],
+      chartData: {
+        Temperature: {
+          labels: [
+            'January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December'
+          ],
+          datasets: [
+            {
+              label: 'Temperture 1',
+              data: [
+                40, 20, 30, 40,
+                20, 50, 40, 30,
+                40, 60, 30, 50
+              ]
+            }, {
+              label: 'Temperture 2',
+              data: [
+                20, 50, 80, 60,
+                50, 30, 20, 60,
+                20, 70, 20, 70
+              ]
+            }
+          ]
+        }
       },
-      chartOptions: {
-      }
+      chartOptions: {}
     }
   },
   components: {
@@ -168,7 +191,7 @@ export default {
       }
     },
     async getSosHeader () {
-      // this.isLoadingHeader = true
+      this.isLoadingHeader = true
       try {
         let request = {
           auth: this.$store.state.authInfo,
@@ -176,22 +199,37 @@ export default {
             buildingId: this.buildingId
           }
         }
-        console.log(request)
         let res = await this.$http.get('/sos/header', request)
-        console.log(res)
-        // this.isLoadingHeader = false
+        for (let key in res.data.current) {
+          this.sosHeader.Current.push(key)
+        }
+        for (let key in res.data.Flow) {
+          this.sosHeader.Flow.push(key)
+        }
+        for (let key in res.data.pressure) {
+          this.sosHeader.Pressure.push(key)
+        }
+        for (let key in res.data.switch) {
+          this.sosHeader.Switch.push(key)
+        }
+        for (let key in res.data.temperature) {
+          this.sosHeader.Temperature.push(key)
+        }
+        this.isLoadingHeader = false
       } catch (err) {
         console.log(err)
-        // this.isLoadingHeader = false
+        this.isLoadingHeader = false
       }
     },
     async onClickSearch () {
+      console.log(this.selectedForm)
+      let [from, to] = [...this.selectedForm.timeRange].map(value => `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}`)
       let request = {
         auth: this.$store.state.authInfo,
         params: {
-          buildingId: 1,
-          timeFrom: '2017-12-20 10',
-          timeTo: '2017-12-20 11'
+          buildingId: this.buildingId,
+          timeFrom: from,
+          timeTo: to
         }
       }
       try {
@@ -199,6 +237,20 @@ export default {
         console.log(res)
       } catch (err) {
         console.log(err)
+      }
+    },
+    generateLabels (from, timeStep, n) {
+      // TODO
+      for (let i = 0; i < n; ++i) {
+        this.chartLabels.push(from + timeStep * i)
+      }
+    },
+    // content: [{label: xxx, data: xxx}]
+    generateChart (type, content) {
+      let label = this.chartLabels
+      this.chartData[type] = {
+        labels: label,
+        datasets: content
       }
     }
   },
@@ -212,6 +264,10 @@ export default {
 </script>
 
 <style scoped>
+.el-checkbox {
+  margin-left: 30px;
+}
+
 #sos-data-list-left-container {
   float: left;
   width: 60vw;
