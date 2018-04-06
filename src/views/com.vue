@@ -12,12 +12,16 @@
       </el-button>
       <el-button
         class="com-button"
+        @click="onClickSave"
       >
         Save
       </el-button>
     </div>
 
-    <div class="com-table-container">
+    <div
+      class="com-table-container"
+      v-loading="isLoading"
+    >
       <v-table
         is-horizontal-resize
         style="width:100%"
@@ -28,6 +32,16 @@
         :show-vertical-border="false"
         :cell-edit-done="cellEditDone"
       />
+
+      <el-pagination
+        id="com-pagination"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="pageSize"
+        background
+        layout="prev, pager, next"
+        :total="dataStorage.length">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -41,10 +55,11 @@ export default {
     return {
       buildingId: null,
       buildingName: null,
+      isLoading: false,
       displayInfo: null,
       comColumns: [
         {
-          field: 'commandTime',
+          field: 'time',
           title: 'Command Time',
           width: 160,
           titleAlign: 'center',
@@ -59,7 +74,7 @@ export default {
           isEdit: true,
           isResize: true
         }, {
-          field: 'parameter1',
+          field: 'parameterVar1',
           title: 'Parameter 1',
           width: 100,
           titleAlign: 'center',
@@ -67,7 +82,7 @@ export default {
           isEdit: true,
           isResize: true
         }, {
-          field: 'parameter2',
+          field: 'parameterVar2',
           title: 'Parameter 2',
           width: 100,
           titleAlign: 'center',
@@ -92,16 +107,11 @@ export default {
           isResize: true
         }
       ],
-      comTableData: [
-        {
-          commandTime: '01/01/2018  14:00:00',
-          type: '1',
-          parameter1: '0.5',
-          parameter2: '0.6',
-          actionTime: '01/01/2018  10:00:30',
-          status: '1'
-        }
-      ]
+      currentPage: 1,
+      pageSize: 20,
+      dataStorage: [],
+      comTableData: [],
+      newCommands: []
     }
   },
   components: {
@@ -110,9 +120,24 @@ export default {
   methods: {
     onClickExport () {},
 
+    // page
+    handleCurrentChange (val) {
+      this.getDataOfPage(val)
+    },
+
     // callback
     cellEditDone (newValue, oldValue, rowIndex, rowData, field) {
       this.comTableData[rowIndex][field] = newValue
+    },
+
+    getDataOfPage (pageNumber) {
+      let startFrom = (pageNumber - 1) * this.pageSize
+      let itemNumber = this.dataStorage.length - startFrom
+      itemNumber = itemNumber < this.pageSize ? itemNumber : this.pageSize
+      this.comTableData = []
+      for (let i = startFrom; i < startFrom + itemNumber; ++i) {
+        this.comTableData.push(this.dataStorage[i])
+      }
     },
 
     async getHistoryCommand () {
@@ -122,26 +147,57 @@ export default {
           buildingId: this.buildingId
         }
       }
+      this.isLoading = true
       try {
         let res = await this.$http.get('/command', request)
-        console.log(res)
+        this.dataStorage = res.data.res
+        this.getDataOfPage(1)
       } catch (err) {
         console.error(err)
       }
+      this.isLoading = false
     },
 
     onClickAddButton () {
+      let id = this.buildingId
       let curDate = new Date()
-      let formatedDate = `${curDate.getMonth() + 1}/${curDate.getDate()}/${curDate.getFullYear()} `
+      let formatedDate = `${curDate.getFullYear()}-${curDate.getMonth() + 1}-${curDate.getDate()}`
       let formatedTime = `${curDate.getHours()}:${curDate.getMinutes()}:${curDate.getSeconds()}`
-      this.comTableData.push({
-        commandTime: formatedDate + formatedTime,
+      this.dataStorage.push({
+        buildingId: id,
+        time: `${formatedDate} ${formatedTime}`,
         type: '',
-        parameter1: '',
-        parameter2: '',
+        parameterVar1: '',
+        parameterVar2: '',
         actionTime: '',
         status: ''
       })
+      this.currentPage = Math.floor(this.dataStorage.length / this.pageSize) + 1
+      this.getDataOfPage(this.currentPage)
+      this.newCommands.push(this.dataStorage[this.dataStorage.length - 1])
+    },
+
+    async onClickSave () {
+      this.isLoading = true
+      for (let i = 0; i < this.newCommands.length; ++i) {
+        try {
+          let request = this.newCommands[i]
+          let res = await this.$http.post('/command', request, { auth: this.$store.state.authInfo })
+          this.newCommands[i] = null
+          if (res.data.status !== 'success') {
+            throw res.data.status
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      this.$notify({
+        title: 'Success',
+        message: 'COM Data Saved'
+      })
+      this.newCommands = []
+      this.currentPage = Math.floor(this.dataStorage.length / this.pageSize) + 1
+      this.isLoading = false
     }
   },
   created () {
@@ -196,6 +252,10 @@ export default {
 .com-button {
   margin: 1vh 0;
   width: 80%;
+}
+
+#com-pagination {
+  margin-top: 30px;
 }
 </style>
 

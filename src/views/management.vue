@@ -291,7 +291,6 @@ export default {
         })
       } else {
         // edit user
-        console.log(this.userInfoForm)
         this.$http.post('/update/user', {
           userId: this.userInfoForm.userId,
           newUsername: this.userInfoForm.username,
